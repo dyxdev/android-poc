@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lab_title">Laboratorio de reproductor (puerta de consentimiento de Mux Data)</string>
+    <string name="lab_consent">Consentimiento de analítica</string>
+    <string name="lab_mode">Modo de reproductor</string>
+    <string name="lab_mode_gated">1 · Mux Player + puerta de consentimiento (candidato)</string>
+    <string name="lab_mode_ungated">2 · Mux Player, solo red (control)</string>
+    <string name="lab_mode_media3">3 · Media3 propio, sin SDK de Mux (reserva)</string>
+    <string name="lab_load_token">Cargar token</string>
+    <string name="lab_token_ready">Token listo — reproductor abajo</string>
+    <string name="lab_token_error">Servidor de tokens inalcanzable (http://10.0.2.2:8787). Arranca tools/token-server.mjs.</string>
+    <string name="lab_no_token">Pulsa «Cargar token» para reproducir. El servidor de tokens corre en tu máquina.</string>
+    <string name="lab_counters">Peticiones de Mux Data (solo hosts y contadores)</string>
+    <string name="lab_received">Recibidas: %1$d</string>
+    <string name="lab_forwarded">Reenviadas: %1$d</string>
+    <string name="lab_dropped">Descartadas: %1$d</string>
+    <string name="lab_method_row">%1$s — recibidas %2$d, reenviadas %3$d</string>
+    <string name="lab_host_row">%1$s — %2$d peticiones</string>
+    <string name="lab_reset">Reiniciar contadores</string>
+</resources>

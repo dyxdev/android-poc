@@ -1,0 +1,9 @@
+.gradle/
+build/
+*/build/
+local.properties
+*.iml
+.DS_Store
+# Secretos: nunca en el repo (el token-server lee .env.local fuera del repo).
+.env*
+!.env.example

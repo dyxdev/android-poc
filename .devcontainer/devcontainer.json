@@ -1,0 +1,12 @@
+{
+  "name": "PoC Android Mux",
+  "image": "mcr.microsoft.com/devcontainers/java:17",
+  "features": {
+    "ghcr.io/devcontainers/features/node:20": {}
+  },
+  "remoteEnv": {
+    "ANDROID_HOME": "${HOME}/android-sdk",
+    "ANDROID_SDK_ROOT": "${HOME}/android-sdk"
+  },
+  "onCreateCommand": "bash .devcontainer/setup-android-sdk.sh"
+}

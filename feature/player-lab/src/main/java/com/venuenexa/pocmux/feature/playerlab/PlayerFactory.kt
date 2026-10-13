@@ -1,0 +1,55 @@
+package com.venuenexa.pocmux.feature.playerlab
+
+import android.content.Context
+import androidx.annotation.OptIn
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.hls.HlsMediaSource
+import com.mux.player.MuxPlayer
+import com.mux.player.media.MediaItems
+import com.mux.stats.sdk.muxstats.ExoPlayerBinding
+import com.mux.stats.sdk.muxstats.INetworkRequest
+
+// Crea el reproductor según el modo. Verificado contra MuxPlayer.kt (main):
+// - addExoPlayerBinding + addNetwork existen en el Builder.
+// - Sin binding, MuxPlayer crea MuxStatsSdkMedia3 SIN la red propia (puerta inútil: caso control).
+// - enableSmartCache(false) como pide el prompt.
+internal object PlayerFactory {
+
+    fun create(context: Context, mode: PlayerMode, gating: INetworkRequest): Player = when (mode) {
+        PlayerMode.MUX_GATED -> MuxPlayer.Builder(context)
+            .addExoPlayerBinding(ExoPlayerBinding())
+            .addNetwork(gating)
+            .enableSmartCache(false)
+            .build()
+
+        PlayerMode.MUX_UNGATED -> MuxPlayer.Builder(context)
+            .addNetwork(gating)
+            .enableSmartCache(false)
+            .build()
+
+        PlayerMode.MEDIA3_ONLY -> ExoPlayer.Builder(context).build()
+    }
+
+    @OptIn(UnstableApi::class)
+    fun prepare(player: Player, context: Context, mode: PlayerMode, playbackId: String, token: String) {
+        when (mode) {
+            PlayerMode.MUX_GATED, PlayerMode.MUX_UNGATED -> {
+                // Reproducción firmada: playbackToken verificado en MediaItems.kt (main).
+                player.setMediaItem(MediaItems.fromMuxPlaybackId(playbackId, playbackToken = token))
+            }
+
+            PlayerMode.MEDIA3_ONLY -> {
+                val hlsUrl = "https://stream.mux.com/$playbackId.m3u8?token=$token"
+                val source = HlsMediaSource.Factory(DefaultDataSource.Factory(context))
+                    .createMediaSource(MediaItem.fromUri(hlsUrl))
+                player.setMediaSource(source)
+            }
+        }
+        player.prepare()
+        player.playWhenReady = true
+    }
+}

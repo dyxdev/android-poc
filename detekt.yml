@@ -1,0 +1,36 @@
+build:
+  maxIssues: 0
+config:
+  validation: true
+comments:
+  active: true
+complexity:
+  active: true
+  LongParameterList:
+    active: false
+coroutines:
+  active: true
+  GlobalCoroutineUsage:
+    active: true
+empty-blocks:
+  active: true
+exceptions:
+  active: true
+  TooGenericExceptionCaught:
+    active: false
+naming:
+  active: true
+style:
+  active: true
+  MaxLineLength:
+    active: true
+    maxLineLength: 120
+  WildcardImport:
+    active: true
+  ForbiddenMethodCall:
+    active: true
+    methods:
+      - 'kotlin.io.print'
+      - 'kotlin.io.println'
+potential-bugs:
+  active: true

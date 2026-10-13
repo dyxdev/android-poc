@@ -1,0 +1,22 @@
+import com.android.build.gradle.LibraryExtension
+
+plugins {
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
+}
+
+extensions.configure<LibraryExtension> {
+    compileSdk = 36
+    defaultConfig {
+        minSdk = 34
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    lint {
+        error.add("MissingTranslation")
+        abortOnError = true
+    }
+}

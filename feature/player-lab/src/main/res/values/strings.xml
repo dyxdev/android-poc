@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lab_title">Player Lab (Mux Data consent gate)</string>
+    <string name="lab_consent">Analytics consent</string>
+    <string name="lab_mode">Player mode</string>
+    <string name="lab_mode_gated">1 · Mux Player + consent gate (candidate)</string>
+    <string name="lab_mode_ungated">2 · Mux Player, network only (control)</string>
+    <string name="lab_mode_media3">3 · Own Media3, no Mux SDK (fallback)</string>
+    <string name="lab_load_token">Load token</string>
+    <string name="lab_token_ready">Token ready — player below</string>
+    <string name="lab_token_error">Token server unreachable (http://10.0.2.2:8787). Start tools/token-server.mjs.</string>
+    <string name="lab_no_token">Press “Load token” to start playback. The token server runs on your machine.</string>
+    <string name="lab_counters">Mux Data requests (hosts + counts only)</string>
+    <string name="lab_received">Received: %1$d</string>
+    <string name="lab_forwarded">Forwarded: %1$d</string>
+    <string name="lab_dropped">Dropped: %1$d</string>
+    <string name="lab_method_row">%1$s — received %2$d, forwarded %3$d</string>
+    <string name="lab_host_row">%1$s — %2$d requests</string>
+    <string name="lab_reset">Reset counters</string>
+</resources>
