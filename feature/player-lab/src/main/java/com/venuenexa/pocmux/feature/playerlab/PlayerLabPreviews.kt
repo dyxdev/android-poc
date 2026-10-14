@@ -9,11 +9,12 @@ import com.venuenexa.pocmux.core.consent.NetworkCounters
 @Composable
 private fun DeniedPreview() {
     PlayerLabContent(
-        state = PlayerLabUiState(
-            consentGranted = false,
-            mode = PlayerMode.MUX_GATED,
-            counters = NetworkCounters(received = 12, dropped = 12),
-        ),
+        state =
+            PlayerLabUiState(
+                consentGranted = false,
+                mode = PlayerMode.MUX_GATED,
+                counters = NetworkCounters(received = 12, dropped = 12),
+            ),
         onConsentChange = {},
         onModeChange = {},
         onLoadToken = {},
@@ -25,19 +26,21 @@ private fun DeniedPreview() {
 @Composable
 private fun GrantedPreview() {
     PlayerLabContent(
-        state = PlayerLabUiState(
-            consentGranted = true,
-            mode = PlayerMode.MUX_GATED,
-            playbackId = "demo",
-            token = "demo",
-            counters = NetworkCounters(
-                received = 8,
-                forwarded = 8,
-                byMethodReceived = mapOf("postWithCompletion" to 8),
-                byMethodForwarded = mapOf("postWithCompletion" to 8),
-                byHost = mapOf("litix.io" to 8),
+        state =
+            PlayerLabUiState(
+                consentGranted = true,
+                mode = PlayerMode.MUX_GATED,
+                playbackId = "demo",
+                token = "demo",
+                counters =
+                    NetworkCounters(
+                        received = 8,
+                        forwarded = 8,
+                        byMethodReceived = mapOf("postWithCompletion" to 8),
+                        byMethodForwarded = mapOf("postWithCompletion" to 8),
+                        byHost = mapOf("litix.io" to 8),
+                    ),
             ),
-        ),
         onConsentChange = {},
         onModeChange = {},
         onLoadToken = {},

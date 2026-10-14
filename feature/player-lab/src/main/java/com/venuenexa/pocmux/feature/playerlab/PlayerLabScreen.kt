@@ -47,10 +47,11 @@ fun PlayerLabContent(
         topBar = { TopAppBar(title = { Text(stringResource(LabR.string.lab_title)) }) },
     ) { insets ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(insets)
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(insets)
+                    .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             ConsentRow(granted = state.consentGranted, onChange = onConsentChange)
@@ -76,7 +77,11 @@ fun PlayerLabContent(
 }
 
 @Composable
-private fun ConsentRow(granted: Boolean, onChange: (Boolean) -> Unit, modifier: Modifier = Modifier) {
+private fun ConsentRow(
+    granted: Boolean,
+    onChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -88,7 +93,11 @@ private fun ConsentRow(granted: Boolean, onChange: (Boolean) -> Unit, modifier: 
 }
 
 @Composable
-private fun ModeRow(mode: PlayerMode, onChange: (PlayerMode) -> Unit, modifier: Modifier = Modifier) {
+private fun ModeRow(
+    mode: PlayerMode,
+    onChange: (PlayerMode) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(text = stringResource(LabR.string.lab_mode), style = MaterialTheme.typography.titleMedium)
         PlayerMode.entries.forEach { entry ->
@@ -101,14 +110,20 @@ private fun ModeRow(mode: PlayerMode, onChange: (PlayerMode) -> Unit, modifier: 
     }
 }
 
-private fun modeLabel(mode: PlayerMode): Int = when (mode) {
-    PlayerMode.MUX_GATED -> LabR.string.lab_mode_gated
-    PlayerMode.MUX_UNGATED -> LabR.string.lab_mode_ungated
-    PlayerMode.MEDIA3_ONLY -> LabR.string.lab_mode_media3
-}
+private fun modeLabel(mode: PlayerMode): Int =
+    when (mode) {
+        PlayerMode.MUX_GATED -> LabR.string.lab_mode_gated
+        PlayerMode.MUX_UNGATED -> LabR.string.lab_mode_ungated
+        PlayerMode.MEDIA3_ONLY -> LabR.string.lab_mode_media3
+    }
 
 @Composable
-private fun TokenRow(ready: Boolean, loading: Boolean, error: Boolean, onLoad: () -> Unit) {
+private fun TokenRow(
+    ready: Boolean,
+    loading: Boolean,
+    error: Boolean,
+    onLoad: () -> Unit,
+) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Button(onClick = onLoad, enabled = !loading) {
             Text(stringResource(LabR.string.lab_load_token))
@@ -145,9 +160,10 @@ private fun PlayerSlot(
     }
     AndroidView(
         factory = { playerView },
-        modifier = modifier
-            .fillMaxWidth()
-            .height(220.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(220.dp),
     )
     Spacer(modifier = Modifier.height(4.dp))
 }

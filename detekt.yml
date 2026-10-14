@@ -20,8 +20,14 @@ exceptions:
     active: false
 naming:
   active: true
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
 style:
   active: true
+  MagicNumber:
+    ignoreAnnotated: ['Composable']
+  UnusedPrivateMember:
+    ignoreAnnotated: ['Preview']
   MaxLineLength:
     active: true
     maxLineLength: 120

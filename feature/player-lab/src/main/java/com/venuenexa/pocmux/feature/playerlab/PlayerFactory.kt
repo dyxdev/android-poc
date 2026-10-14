@@ -17,24 +17,36 @@ import com.mux.stats.sdk.muxstats.INetworkRequest
 // - Sin binding, MuxPlayer crea MuxStatsSdkMedia3 SIN la red propia (puerta inútil: caso control).
 // - enableSmartCache(false) como pide el prompt.
 internal object PlayerFactory {
+    fun create(
+        context: Context,
+        mode: PlayerMode,
+        gating: INetworkRequest,
+    ): ExoPlayer =
+        when (mode) {
+            PlayerMode.MUX_GATED ->
+                MuxPlayer.Builder(context)
+                    .addExoPlayerBinding(ExoPlayerBinding())
+                    .addNetwork(gating)
+                    .enableSmartCache(false)
+                    .build()
 
-    fun create(context: Context, mode: PlayerMode, gating: INetworkRequest): ExoPlayer = when (mode) {
-        PlayerMode.MUX_GATED -> MuxPlayer.Builder(context)
-            .addExoPlayerBinding(ExoPlayerBinding())
-            .addNetwork(gating)
-            .enableSmartCache(false)
-            .build()
+            PlayerMode.MUX_UNGATED ->
+                MuxPlayer.Builder(context)
+                    .addNetwork(gating)
+                    .enableSmartCache(false)
+                    .build()
 
-        PlayerMode.MUX_UNGATED -> MuxPlayer.Builder(context)
-            .addNetwork(gating)
-            .enableSmartCache(false)
-            .build()
-
-        PlayerMode.MEDIA3_ONLY -> ExoPlayer.Builder(context).build()
-    }
+            PlayerMode.MEDIA3_ONLY -> ExoPlayer.Builder(context).build()
+        }
 
     @OptIn(UnstableApi::class)
-    fun prepare(player: ExoPlayer, context: Context, mode: PlayerMode, playbackId: String, token: String?) {
+    fun prepare(
+        player: ExoPlayer,
+        context: Context,
+        mode: PlayerMode,
+        playbackId: String,
+        token: String?,
+    ) {
         when (mode) {
             PlayerMode.MUX_GATED, PlayerMode.MUX_UNGATED -> {
                 // token null = playback público; con token = reproducción firmada (MediaItems.kt, 1.6.0).
@@ -43,8 +55,9 @@ internal object PlayerFactory {
 
             PlayerMode.MEDIA3_ONLY -> {
                 val hlsUrl = "https://stream.mux.com/$playbackId.m3u8" + (token?.let { "?token=$it" } ?: "")
-                val source = HlsMediaSource.Factory(DefaultDataSource.Factory(context))
-                    .createMediaSource(MediaItem.fromUri(hlsUrl))
+                val source =
+                    HlsMediaSource.Factory(DefaultDataSource.Factory(context))
+                        .createMediaSource(MediaItem.fromUri(hlsUrl))
                 player.setMediaSource(source)
             }
         }

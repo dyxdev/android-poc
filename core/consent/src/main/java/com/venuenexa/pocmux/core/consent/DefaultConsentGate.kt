@@ -12,30 +12,33 @@ import javax.inject.Singleton
 // Lee DataStore una vez al arrancar (denegado por defecto) y guarda el valor
 // en memoria para leerlo EN CADA ENVÍO sin bloquear el hilo de red.
 @Singleton
-class DefaultConsentGate @Inject constructor(
-    private val repository: ConsentRepository,
-    gatingFactory: GatingFactory,
-    @AppScopeQualifier appScope: CoroutineScope,
-) : ConsentGate {
+class DefaultConsentGate
+    @Inject
+    constructor(
+        private val repository: ConsentRepository,
+        gatingFactory: GatingFactory,
+        @AppScopeQualifier appScope: CoroutineScope,
+    ) : ConsentGate {
+        private val grantedNow = AtomicBoolean(false)
+        private val gating: ConsentGatingNetworkRequest = gatingFactory.create { grantedNow.get() }
 
-    private val grantedNow = AtomicBoolean(false)
-    private val gating: ConsentGatingNetworkRequest = gatingFactory.create { grantedNow.get() }
+        override val granted: Flow<Boolean> = repository.granted
 
-    override val granted: Flow<Boolean> = repository.granted
+        override val counters: StateFlow<NetworkCounters> = gating.counters
 
-    override val counters: StateFlow<NetworkCounters> = gating.counters
-
-    init {
-        appScope.launch {
-            repository.granted.collect { grantedNow.set(it) }
+        init {
+            appScope.launch {
+                repository.granted.collect { grantedNow.set(it) }
+            }
         }
+
+        override fun isGrantedNow(): Boolean = grantedNow.get()
+
+        override suspend fun setGranted(value: Boolean) {
+            repository.setGranted(value)
+        }
+
+        override fun resetCounters() = gating.resetCounters()
+
+        internal fun gatingNetwork(): ConsentGatingNetworkRequest = gating
     }
-
-    override fun isGrantedNow(): Boolean = grantedNow.get()
-
-    override suspend fun setGranted(value: Boolean) = repository.setGranted(value)
-
-    override fun resetCounters() = gating.resetCounters()
-
-    internal fun gatingNetwork(): ConsentGatingNetworkRequest = gating
-}

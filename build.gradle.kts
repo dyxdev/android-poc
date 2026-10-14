@@ -21,4 +21,9 @@ val detektId = libs.plugins.detekt.get().pluginId
 subprojects {
     apply(plugin = ktlintId)
     apply(plugin = detektId)
+    extensions.configure<io.gitlab.arturbosch.detekt.extensions.DetektExtension> {
+        config.setFrom(rootProject.file("detekt.yml"))
+        buildUponDefaultConfig = true
+        allRules = false
+    }
 }

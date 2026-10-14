@@ -1,7 +1,6 @@
 package com.venuenexa.pocmux.core.common
 
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -20,8 +19,10 @@ annotation class DefaultDispatcher
 annotation class MainDispatcher
 
 @Singleton
-class AppDispatchers @Inject constructor(
-    @IoDispatcher val io: CoroutineDispatcher = Dispatchers.IO,
-    @DefaultDispatcher val default: CoroutineDispatcher = Dispatchers.Default,
-    @MainDispatcher val main: CoroutineDispatcher = Dispatchers.Main,
-)
+class AppDispatchers
+    @Inject
+    constructor(
+        @IoDispatcher val io: CoroutineDispatcher,
+        @DefaultDispatcher val default: CoroutineDispatcher,
+        @MainDispatcher val main: CoroutineDispatcher,
+    )

@@ -23,7 +23,11 @@ private class FakeNetwork : INetworkRequest {
         gets++
     }
 
-    override fun post(url: URL?, body: JSONObject?, headers: Hashtable<String, String>?) {
+    override fun post(
+        url: URL?,
+        body: JSONObject?,
+        headers: Hashtable<String, String>?,
+    ) {
         posts++
     }
 
@@ -53,7 +57,6 @@ private class FakeNetwork : INetworkRequest {
 }
 
 class ConsentGatingNetworkRequestTest {
-
     private val url = URL("https://litix.io/android")
 
     @Test
@@ -82,7 +85,10 @@ class ConsentGatingNetworkRequestTest {
             "{}",
             null,
             object : INetworkRequest.IMuxNetworkRequestsCompletion2 {
-                override fun onComplete(success: Boolean, headers: Map<String, List<String>>?) {
+                override fun onComplete(
+                    success: Boolean,
+                    headers: Map<String, List<String>>?,
+                ) {
                     c2 = success
                 }
             },

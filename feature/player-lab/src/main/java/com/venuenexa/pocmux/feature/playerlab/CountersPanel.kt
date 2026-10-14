@@ -14,7 +14,11 @@ import com.venuenexa.pocmux.feature.playerlab.R as LabR
 
 // Solo hosts y contadores: sin cuerpos, sin tokens, sin datos personales.
 @Composable
-fun CountersPanel(state: PlayerLabUiState, onReset: () -> Unit, modifier: Modifier = Modifier) {
+fun CountersPanel(
+    state: PlayerLabUiState,
+    onReset: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val counters = state.counters
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(text = stringResource(LabR.string.lab_counters), style = MaterialTheme.typography.titleMedium)

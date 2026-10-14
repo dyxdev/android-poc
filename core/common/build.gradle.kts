@@ -1,5 +1,5 @@
 plugins {
-    id("android-library")
+    id("pocmux.android-library")
     alias(libs.plugins.kotlin.kapt)
 }
 

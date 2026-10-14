@@ -16,17 +16,20 @@ import javax.inject.Singleton
 // Denegado por defecto (condición de producto ADR-AND-0032).
 // Público porque lo necesita el grafo Hilt generado en :app; la Key sigue internal.
 @Singleton
-class ConsentRepository @Inject constructor(
-    private val dataStore: DataStore<Preferences>,
-    @IoDispatcher private val io: CoroutineDispatcher,
-) {
-    val granted: Flow<Boolean> = dataStore.data.map { it[KEY_GRANTED] ?: false }
+class ConsentRepository
+    @Inject
+    constructor(
+        private val dataStore: DataStore<Preferences>,
+        @IoDispatcher private val io: CoroutineDispatcher,
+    ) {
+        val granted: Flow<Boolean> = dataStore.data.map { it[KEY_GRANTED] ?: false }
 
-    suspend fun setGranted(value: Boolean) = withContext(io) {
-        dataStore.edit { it[KEY_GRANTED] = value }
-    }
+        suspend fun setGranted(value: Boolean) =
+            withContext(io) {
+                dataStore.edit { it[KEY_GRANTED] = value }
+            }
 
-    companion object {
-        internal val KEY_GRANTED = booleanPreferencesKey("analytics_consent_granted")
+        companion object {
+            internal val KEY_GRANTED = booleanPreferencesKey("analytics_consent_granted")
+        }
     }
-}

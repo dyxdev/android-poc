@@ -16,7 +16,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisedJob
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -29,17 +29,18 @@ annotation class AppScopeQualifier
 @Module
 @InstallIn(SingletonComponent::class)
 object ConsentModule {
-
     @Provides
     @Singleton
-    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
-        context.consentDataStore
+    fun provideDataStore(
+        @ApplicationContext context: Context,
+    ): DataStore<Preferences> = context.consentDataStore
 
     @Provides
     @Singleton
     @AppScopeQualifier
-    fun provideAppScope(@DefaultDispatcher dispatcher: CoroutineDispatcher): CoroutineScope =
-        CoroutineScope(SupervisedJob() + dispatcher)
+    fun provideAppScope(
+        @DefaultDispatcher dispatcher: CoroutineDispatcher,
+    ): CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
 
     // Delegado real: MuxNetwork pública del SDK (verificada en stats-sdk-android main).
     // El device solo aporta cabeceras de entorno; la puerta de consentimiento está delante.
@@ -49,20 +50,20 @@ object ConsentModule {
         @ApplicationContext context: Context,
         @AppScopeQualifier scope: CoroutineScope,
     ): INetworkRequest {
-        val device = MuxDataSdk.AndroidDevice(
-            ctx = context,
-            playerVersion = "1.6.0",
-            muxPluginName = "poc-android-mux",
-            muxPluginVersion = "1.6.0",
-            playerSoftware = "poc-android-mux",
-        )
+        val device =
+            MuxDataSdk.AndroidDevice(
+                ctx = context,
+                playerVersion = "1.6.0",
+                muxPluginName = "poc-android-mux",
+                muxPluginVersion = "1.6.0",
+                playerSoftware = "poc-android-mux",
+            )
         return MuxNetwork(device, scope)
     }
 
     @Provides
     @Singleton
-    fun provideGatingNetwork(gate: DefaultConsentGate): ConsentGatingNetworkRequest =
-        gate.gatingNetwork()
+    fun provideGatingNetwork(gate: DefaultConsentGate): ConsentGatingNetworkRequest = gate.gatingNetwork()
 }
 
 @Module

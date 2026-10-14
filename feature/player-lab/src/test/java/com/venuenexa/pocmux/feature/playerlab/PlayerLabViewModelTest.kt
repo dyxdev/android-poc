@@ -37,7 +37,6 @@ private class FakeConsentGate(provider: FakeConsentProvider) : ConsentGate {
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlayerLabViewModelTest {
-
     private val dispatcher = StandardTestDispatcher()
 
     @Before
@@ -52,18 +51,19 @@ class PlayerLabViewModelTest {
     }
 
     @Test
-    fun consentDeniedByDefault_andTogglePersists() = runTest {
-        val gate = FakeConsentGate(FakeConsentProvider(initial = false))
-        val vm = PlayerLabViewModel(gate, dispatcher)
-        // uiState usa stateIn(WhileSubscribed): sin colector el valor no se actualiza.
-        backgroundScope.launch(dispatcher) { vm.uiState.collect {} }
-        testScheduler.runCurrent()
+    fun consentDeniedByDefault_andTogglePersists() =
+        runTest {
+            val gate = FakeConsentGate(FakeConsentProvider(initial = false))
+            val vm = PlayerLabViewModel(gate, dispatcher)
+            // uiState usa stateIn(WhileSubscribed): sin colector el valor no se actualiza.
+            backgroundScope.launch(dispatcher) { vm.uiState.collect {} }
+            testScheduler.runCurrent()
 
-        assertEquals(false, vm.uiState.value.consentGranted)
+            assertEquals(false, vm.uiState.value.consentGranted)
 
-        vm.onConsentChange(true)
-        testScheduler.advanceUntilIdle()
-        assertEquals(true, vm.uiState.value.consentGranted)
-        assertEquals(1, gate.sets)
-    }
+            vm.onConsentChange(true)
+            testScheduler.advanceUntilIdle()
+            assertEquals(true, vm.uiState.value.consentGranted)
+            assertEquals(1, gate.sets)
+        }
 }

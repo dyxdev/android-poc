@@ -4,7 +4,7 @@
 muxPlayer = "1.6.0"
 media3 = "1.11.0"
 # Estables recientes (verificar con ./gradlew build en máquina con SDK; ver docs/informe.md).
-agp = "8.7.3"
+agp = "8.13.2"
 kotlin = "2.1.20"
 hilt = "2.56.2"
 # BOM 2026.06.01 = compose-ui 1.11.4 (minCompileSdk 35). Las BOM 2026.08.00+ (compose 1.12.x) exigen compileSdk 37 y AGP 9.1.
@@ -23,7 +23,7 @@ detekt = "1.23.8"
 mux-player = { group = "com.mux.player", name = "android", version.ref = "muxPlayer" }
 media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
 media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" }
-media3-hls = { group = "androidx.media3", name = "media3-hls", version.ref = "media3" }
+media3-hls = { group = "androidx.media3", name = "media3-exoplayer-hls", version.ref = "media3" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }

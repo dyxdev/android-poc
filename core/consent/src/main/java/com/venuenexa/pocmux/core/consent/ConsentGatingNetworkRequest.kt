@@ -24,7 +24,6 @@ class ConsentGatingNetworkRequest(
     private val delegate: INetworkRequest,
     private val isGranted: () -> Boolean,
 ) : INetworkRequest {
-
     private val _counters = MutableStateFlow(NetworkCounters())
     val counters: StateFlow<NetworkCounters> = _counters.asStateFlow()
 
@@ -36,7 +35,11 @@ class ConsentGatingNetworkRequest(
         gate(method = "get", host = url?.host) { delegate.get(url) }
     }
 
-    override fun post(url: URL?, body: JSONObject?, headers: Hashtable<String, String>?) {
+    override fun post(
+        url: URL?,
+        body: JSONObject?,
+        headers: Hashtable<String, String>?,
+    ) {
         gate(method = "post", host = url?.host) { delegate.post(url, body, headers) }
     }
 
@@ -49,11 +52,13 @@ class ConsentGatingNetworkRequest(
     ) {
         // Sin consentimiento: descartar y completar como fallo para no dejar callbacks colgados.
         // No se guarda el body: los eventos previos al consentimiento no se reenvían.
-        if (!gate(method = "postWithCompletion", host = domain)) {
+        val forwarded =
+            gate(method = "postWithCompletion", host = domain) {
+                delegate.postWithCompletion(domain, envKey, body, headers, completion)
+            }
+        if (!forwarded) {
             completion?.onComplete(false)
-            return
         }
-        delegate.postWithCompletion(domain, envKey, body, headers, completion)
     }
 
     override fun postWithCompletion(
@@ -63,15 +68,21 @@ class ConsentGatingNetworkRequest(
         headers: Hashtable<String, String>?,
         completion: INetworkRequest.IMuxNetworkRequestsCompletion2?,
     ) {
-        if (!gate(method = "postWithCompletion", host = domain)) {
+        val forwarded =
+            gate(method = "postWithCompletion", host = domain) {
+                delegate.postWithCompletion(domain, envKey, body, headers, completion)
+            }
+        if (!forwarded) {
             completion?.onComplete(false, null)
-            return
         }
-        delegate.postWithCompletion(domain, envKey, body, headers, completion)
     }
 
     // Devuelve si se reenvió. Solo hosts y contadores en logs: sin cuerpos ni tokens.
-    private inline fun gate(method: String, host: String?, forward: () -> Unit): Boolean {
+    private inline fun gate(
+        method: String,
+        host: String?,
+        forward: () -> Unit,
+    ): Boolean {
         val granted = isGranted()
         _counters.value = _counters.value.record(method = method, host = host, wasForwarded = granted)
         if (granted) {

@@ -9,7 +9,11 @@ data class NetworkCounters(
     val byMethodForwarded: Map<String, Int> = emptyMap(),
     val byHost: Map<String, Int> = emptyMap(),
 ) {
-    fun record(method: String, host: String?, wasForwarded: Boolean): NetworkCounters {
+    fun record(
+        method: String,
+        host: String?,
+        wasForwarded: Boolean,
+    ): NetworkCounters {
         val nextByMethodReceived = byMethodReceived + (method to ((byMethodReceived[method] ?: 0) + 1))
         val nextByHost = if (host != null) byHost + (host to ((byHost[host] ?: 0) + 1)) else byHost
         return if (wasForwarded) {
