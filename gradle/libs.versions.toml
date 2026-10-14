@@ -3,7 +3,7 @@
 # Mux Data 1.13.2 llega como transitiva de Mux Player (artefacto data-media3-at_1_11).
 muxPlayer = "1.6.0"
 media3 = "1.11.0"
-# Estables recientes (verificar con ./gradlew build en máquina con SDK; ver docs/informe.md).
+# assembleDebug compila con estas versiones en Codespace (2026-10-14); ver docs/informe.md §1.
 agp = "8.13.2"
 kotlin = "2.1.20"
 hilt = "2.56.2"

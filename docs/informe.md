@@ -10,9 +10,9 @@
 | Mux Player (`com.mux.player:android`) | 1.6.0 | (pendiente `./gradlew build`) |
 | Mux Data (`data-media3-at_1_11`, transitiva) | 1.13.2 | (pendiente) |
 | Media3 | 1.11.0 | (pendiente) |
-| AGP / Kotlin / Gradle | 8.7.3 / 2.1.20 / 8.12 | (pendiente) |
+| AGP / Kotlin / Gradle | 8.13.2 / 2.1.20 / 8.13 | Gradle 8.13 (log del Codespace, 2026-10-14); resto (pendiente) |
 | Compose BOM / Material3 | 2026.06.01 / 1.4.0 | (pendiente) |
-| compileSdk / targetSdk / minSdk | 36 / 36 / 34 | (pendiente) |
+| compileSdk / targetSdk / minSdk | 37 (`android-37.0`) / 36 / 34 | compila en Codespace (2026-10-14) |
 
 Hecho comprobado (2026-10-13, docs públicas): Mux Player 1.6.0 declara Media3 1.11.0 +
 Mux Data 1.13.2. Hecho comprobado (consultado 2026-10-14): 1.7.0 figura ya en
@@ -23,11 +23,20 @@ se mantiene 1.6.0 por decisión de Andy (2026-10-13).
 Hecho comprobado (2026-10-14, `dl.google.com/dl/android/maven2`): la BOM `2026.09.00`
 (compose-ui 1.12.1) y la `2026.08.00` (1.12.0) llevan `minCompileSdk=37` y
 `minAndroidGradlePluginVersion=9.1.0` en el `aar-metadata.properties` de `ui-android`; el
-proyecto usa compileSdk 36 (Media3 1.11.0 exige 36) y AGP 8.7.3. Se fija la BOM
-`2026.06.01` (compose-ui 1.11.4, material3 1.4.0): `ui-android`, `material3-android`,
-`foundation-layout-android` y `foundation-android` declaran `minCompileSdk=35` y
-`minAndroidGradlePluginVersion=8.6.0`; `runtime-android`, 34 / 8.1.1. No se subió
-compileSdk, AGP ni Kotlin.
+proyecto usaba entonces compileSdk 36 y AGP 8.7.3. Se fija la BOM `2026.06.01` (compose-ui
+1.11.4, material3 1.4.0): `ui-android`, `material3-android`, `foundation-layout-android` y
+`foundation-android` declaran `minCompileSdk=35` y `minAndroidGradlePluginVersion=8.6.0`;
+`runtime-android`, 34 / 8.1.1. La BOM `2026.09.00` sigue sin usarse porque exige AGP 9.1.
+
+Hecho comprobado (2026-10-14, build real con AGP 8.7.3): el `aar-metadata.properties` de
+`com.mux.player:android:1.6.0`, `data-media3-at_1_11:1.13.2` y `data-media3-custom-at_1_11:1.13.2`
+declara `minCompileSdk=37`; también Mux Player 1.5.5 y 1.7.0, mientras que 1.5.3 y anteriores
+no lo exigen. Por eso el proyecto compila con compileSdk 37 (targetSdk 36, minSdk 34).
+AGP 8.7.3 no puede usar esa plataforma: Google la publica como `platforms;android-37.0` con
+`api-level` 37.0 (repository2-3.xml) y AGP la busca por paquete. Con AGP 8.13.2 y Gradle 8.13, un
+entero 37 pide el hash `android-37` y falla; `compileSdkVersion("android-37.0")` en las
+convenciones de `build-logic` lo resuelve (comprobado en el Codespace, `assembleDebug` correcto).
+AGP 8.13.2 se probó hasta compileSdk 36.1: `android.suppressUnsupportedCompileSdk=37,37.0`.
 
 ## 2. Firmas verificadas en código público (rama main, 2026-10-13)
 
@@ -78,8 +87,14 @@ compileSdk, AGP ni Kotlin.
   un cambio interno (p. ej. crear `MuxStatsSdkMedia3` con red por defecto aunque haya
   binding, o nuevas llamadas fuera de `INetworkRequest`) rompería la puerta en silencio.
   Mitigación: este PoC + caso A en CI con emulador, y pregunta a Mux si es vía admitida.
-- ¿Qué no se pudo verificar aquí? Compilación y árbitros (esta máquina no tiene Android SDK;
-  ver §6), ni ningún caso de red (requiere dispositivo/emulador + claves de Andy).
+- **Hecho comprobado (2026-10-14, bytecode de muxcore 8.12.0, `BeaconBatchTracker.onComplete`):**
+  con `success=false` el núcleo re-encola el lote pendiente en memoria (hasta 3600 eventos;
+  por encima los descarta) y lo reintenta. La puerta completa con `false` al descartar, así
+  que lo recogido sin consentimiento podría enviarse después de conceder (caso C, OFF→ON).
+  Contradice «sin cola» de arriba; **decisión pendiente de Andy** (completar con `true` o
+  documentar el comportamiento).
+- ¿Qué no se pudo verificar? Ningún caso de red (requiere dispositivo/emulador + claves de
+  Andy). Compilación y árbitros: ver §6.
 
 ## 5. Recomendación para el ADR (**propuesta**, decide Andy)
 
@@ -87,11 +102,16 @@ compileSdk, AGP ni Kotlin.
   preguntar a Mux si es vía admitida y programar el caso A como test de red en CI.
 - Si A muestra envíos o el corte falla: **volver a la reserva** (Media3 propio, ADR-AND-0030).
 
-## 6. Salida de los árbitros (pegar la real; esta máquina no tiene SDK)
+## 6. Salida de los árbitros
 
-```
-(pendiente: ./gradlew build | ./gradlew ktlintCheck detekt | ./gradlew test | ./gradlew lint)
-```
+Última ejecución completa pegada por Andy (Codespace, 2026-10-14, 6 min 12 s,
+`assembleDebug ktlintCheck detekt test lint --continue`): `assembleDebug` correcto (APK debug),
+`detekt` y `lint` correctos en todos los módulos, tests de `feature:player-lab` correctos.
+Fallaron tres tareas: `:core:consent:ktlintMainSourceSetCheck` (`GatingFactory.kt:14`) y
+`:core:consent:testDebugUnitTest` / `testReleaseUnitTest`
+(`granted_everythingReachesDelegate`, aserción `byHost["litix.io"]`). Corregidas después en el
+repo (`max_line_length = 120` en `.editorconfig`; la expectativa correcta es 4 peticiones a
+`litix.io`); **pendiente reejecutar** para confirmar. Salida real definitiva: (pendiente).
 
 Nota: el código se generó sin compilar (acordado con Andy el 2026-10-13 ante la falta de
 Android SDK en esta máquina). Revisión estática propia del 2026-10-13: 11 hallazgos,
@@ -105,4 +125,8 @@ faltaban plugin kapt, plugin Hilt en `:app`, `namespace` en librerías,
 `Dispatchers.setMain`; `gradlew`/`gradlew.bat` + wrapper jar añadidos (jar tomado del
 repo oficial gradle/gradle en GitHub: regenerar con `gradle wrapper --gradle-version 8.12`
 en tu máquina para dejarlo canónico).
+Actualización 2026-10-14: `gradlew`, `gradlew.bat` y el jar eran una versión reducida a mano (el
+`exec` pasaba `"-Xmx64m"` con comillas a Java) y el jar no coincidía con el publicado; se
+sustituyeron por los oficiales de Gradle 8.13.0 (sha256 del jar verificado contra
+https://services.gradle.org/distributions/gradle-8.13-wrapper.jar.sha256).
 Los puntos de riesgo de compilación que solo tu build puede confirmar siguen en §2.

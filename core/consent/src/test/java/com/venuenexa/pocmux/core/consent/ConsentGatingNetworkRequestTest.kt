@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.venuenexa.pocmux.core.consent
 
 import com.mux.stats.sdk.muxstats.INetworkRequest
@@ -137,7 +139,8 @@ class ConsentGatingNetworkRequestTest {
         assertEquals(4, counters.received)
         assertEquals(4, counters.forwarded)
         assertEquals(0, counters.dropped)
-        assertEquals(1, counters.byHost["litix.io"])
+        // byHost cuenta peticiones por host: get + post + 2 postWithCompletion, todas a litix.io.
+        assertEquals(4, counters.byHost["litix.io"])
     }
 
     @Test

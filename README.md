@@ -15,7 +15,7 @@ Mux Data está apagado sin consentimiento de analítica (0 peticiones a `*.litix
 - `tools/token-server.mjs` — JWT RS256 local, puerto 8787 (claves de Andy, fuera del repo).
 - `docs/procedimiento-capturas.md` — lo que ejecuta Andy. `docs/informe.md` — resultados.
 
-## Lo que ejecuta Andy (esta máquina no tiene Android SDK)
+## Build y árbitros (Codespace o máquina con Android SDK)
 
 ```bash
 node --env-file=<tu .env.local> tools/token-server.mjs
