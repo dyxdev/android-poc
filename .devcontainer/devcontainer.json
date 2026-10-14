@@ -1,9 +1,6 @@
 {
   "name": "PoC Android Mux",
   "image": "mcr.microsoft.com/devcontainers/java:17",
-  "features": {
-    "ghcr.io/devcontainers/features/node:20": {}
-  },
   "remoteEnv": {
     "ANDROID_HOME": "${containerEnv:HOME}/android-sdk",
     "ANDROID_SDK_ROOT": "${containerEnv:HOME}/android-sdk"
