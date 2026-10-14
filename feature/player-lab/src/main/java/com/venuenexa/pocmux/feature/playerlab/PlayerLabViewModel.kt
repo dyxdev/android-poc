@@ -59,6 +59,11 @@ class PlayerLabViewModel @Inject constructor(
     fun onResetCounters() = consentGate.resetCounters()
 
     fun onLoadToken() {
+        if (BuildConfig.PUBLIC_PLAYBACK_ID.isNotBlank()) {
+            // Playback público: sin token ni servidor.
+            local.update { it.copy(playbackId = BuildConfig.PUBLIC_PLAYBACK_ID, token = null, tokenError = false) }
+            return
+        }
         if (local.value.isLoadingToken) return
         local.update { it.copy(isLoadingToken = true, tokenError = false) }
         viewModelScope.launch {

@@ -1,8 +1,15 @@
 # Procedimiento reproducible: captura de red con mitmproxy (lo ejecuta Andy)
 
-PoC: `poc-android-mux`. Requisito: emulador **Android 14+** (API 34+, minSdk 34).
+PoC: `poc-android-mux`. Requisito: dispositivo o emulador **Android 14+** (API 34+, minSdk 34).
 
-## 1. Arrancar el token-server (en tu máquina, con tus claves)
+## 1. Vídeo: playback público (por defecto) o firmado
+
+Por defecto el APK reproduce un **playback ID público** (`BuildConfig.PUBLIC_PLAYBACK_ID`, el de
+`mux-1` del catálogo de test-mux): no hace falta token ni servidor. Otro ID público:
+`./gradlew assembleDebug -PpublicPlaybackId=<id>`.
+
+Flujo firmado (opcional): compila con `-PpublicPlaybackId=` (vacío) y `-PtokenUrl=<URL que alcance
+el dispositivo>`, y arranca el token-server en tu máquina con tus claves:
 
 ```bash
 node --env-file=<tu .env.local> tools/token-server.mjs
@@ -17,14 +24,20 @@ curl http://127.0.0.1:8787
 # {"playbackId":"...","token":"..."}
 ```
 
-## 2. mitmproxy en el emulador
+## 2. mitmproxy (emulador o dispositivo físico)
 
-1. Arranca `mitmproxy` (o `mitmdump -w captura-<caso>.har`) en tu máquina, puerto 8080.
-2. Instala la CA de mitmproxy como **CA de usuario** en el emulador
-   (`~/.mitmproxy/mitbot-ca-cert.pem` → Ajustes → Seguridad → Certificados).
-   El flavor **debug** confía en CAs de usuario (`app/src/debug/xml/network_security_config.xml`).
-3. En el emulador: Ajustes → Red → Proxy manual → `10.0.2.2:8080`.
-4. Instala el APK **debug** (`./gradlew installDebug`) y abre la pantalla del laboratorio.
+1. Arranca `mitmweb --listen-port 8080` (o `mitmdump -w captura-<caso>.flows`, formato nativo de
+   mitmproxy) en tu máquina.
+2. Instala la CA de mitmproxy como **CA de usuario** (`~/.mitmproxy/mitmproxy-ca-cert.cer`; la ruta
+   del menú de Ajustes → Seguridad varía según el fabricante). El flavor **debug** confía en CAs
+   de usuario (`app/src/debug/res/xml/network_security_config.xml`).
+3. Proxy manual:
+   - Emulador: `10.0.2.2:8080`.
+   - Dispositivo físico: Wi-Fi → proxy manual → IP de tu máquina en la misma red y puerto `8080`.
+     No verificado: aislamiento de clientes del router, VPN activas y que el cliente HTTP de
+     Mux Data respete el proxy del sistema.
+4. Instala el APK **debug** (`./gradlew installDebug` en un emulador; en un dispositivo, el APK de
+   `app/build/outputs/apk/debug/`) y abre la pantalla del laboratorio.
 
 ## 3. Qué anotar en cada caso
 

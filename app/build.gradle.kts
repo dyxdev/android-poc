@@ -1,5 +1,6 @@
 plugins {
     id("android-application")
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.kapt)
 }
@@ -18,7 +19,7 @@ dependencies {
     implementation(platform(libs.compose.bom))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.activity:activity-compose")
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.hilt.android)
     implementation(libs.timber)

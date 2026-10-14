@@ -56,15 +56,14 @@ fun PlayerLabContent(
             ConsentRow(granted = state.consentGranted, onChange = onConsentChange)
             ModeRow(mode = state.mode, onChange = onModeChange)
             TokenRow(
-                ready = state.playbackId != null && state.token != null,
+                ready = state.playbackId != null,
                 loading = state.isLoadingToken,
                 error = state.tokenError,
                 onLoad = onLoadToken,
             )
             val playbackId = state.playbackId
-            val token = state.token
-            if (playbackId != null && token != null && gating != null) {
-                PlayerSlot(mode = state.mode, playbackId = playbackId, token = token, gating = gating)
+            if (playbackId != null && gating != null) {
+                PlayerSlot(mode = state.mode, playbackId = playbackId, token = state.token, gating = gating)
             } else {
                 Text(
                     text = stringResource(LabR.string.lab_no_token),
@@ -129,7 +128,7 @@ private fun TokenRow(ready: Boolean, loading: Boolean, error: Boolean, onLoad: (
 private fun PlayerSlot(
     mode: PlayerMode,
     playbackId: String,
-    token: String,
+    token: String?,
     gating: ConsentGatingNetworkRequest,
     modifier: Modifier = Modifier,
 ) {

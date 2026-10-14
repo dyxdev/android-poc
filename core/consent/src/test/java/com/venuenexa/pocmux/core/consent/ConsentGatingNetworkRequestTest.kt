@@ -64,19 +64,29 @@ class ConsentGatingNetworkRequestTest {
         gate.get(url)
         gate.post(url, JSONObject(), Hashtable())
         var c1: Boolean? = null
-        gate.postWithCompletion("litix.io", "env", "{}", null,
+        gate.postWithCompletion(
+            "litix.io",
+            "env",
+            "{}",
+            null,
             object : INetworkRequest.IMuxNetworkRequestsCompletion {
                 override fun onComplete(success: Boolean) {
                     c1 = success
                 }
-            })
+            },
+        )
         var c2: Boolean? = null
-        gate.postWithCompletion("litix.io", "env", "{}", null,
+        gate.postWithCompletion(
+            "litix.io",
+            "env",
+            "{}",
+            null,
             object : INetworkRequest.IMuxNetworkRequestsCompletion2 {
                 override fun onComplete(success: Boolean, headers: Map<String, List<String>>?) {
                     c2 = success
                 }
-            })
+            },
+        )
 
         assertEquals(0, fake.gets)
         assertEquals(0, fake.posts)
@@ -98,10 +108,20 @@ class ConsentGatingNetworkRequestTest {
 
         gate.get(url)
         gate.post(url, JSONObject(), Hashtable())
-        gate.postWithCompletion("litix.io", "env", "{}", null,
-            completion = null as INetworkRequest.IMuxNetworkRequestsCompletion?)
-        gate.postWithCompletion("litix.io", "env", "{}", null,
-            completion = null as INetworkRequest.IMuxNetworkRequestsCompletion2?)
+        gate.postWithCompletion(
+            "litix.io",
+            "env",
+            "{}",
+            null,
+            null as INetworkRequest.IMuxNetworkRequestsCompletion?,
+        )
+        gate.postWithCompletion(
+            "litix.io",
+            "env",
+            "{}",
+            null,
+            null as INetworkRequest.IMuxNetworkRequestsCompletion2?,
+        )
 
         assertEquals(1, fake.gets)
         assertEquals(1, fake.posts)

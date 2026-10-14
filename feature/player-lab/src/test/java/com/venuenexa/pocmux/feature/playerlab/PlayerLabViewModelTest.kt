@@ -8,6 +8,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -54,6 +55,9 @@ class PlayerLabViewModelTest {
     fun consentDeniedByDefault_andTogglePersists() = runTest {
         val gate = FakeConsentGate(FakeConsentProvider(initial = false))
         val vm = PlayerLabViewModel(gate, dispatcher)
+        // uiState usa stateIn(WhileSubscribed): sin colector el valor no se actualiza.
+        backgroundScope.launch(dispatcher) { vm.uiState.collect {} }
+        testScheduler.runCurrent()
 
         assertEquals(false, vm.uiState.value.consentGranted)
 
