@@ -5,6 +5,9 @@ plugins {
 
 android {
     namespace = "com.venuenexa.pocmux.core.consent"
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 dependencies {

@@ -6,10 +6,10 @@
     <string name="lab_mode_gated">1 · Mux Player + puerta de consentimiento (candidato)</string>
     <string name="lab_mode_ungated">2 · Mux Player, solo red (control)</string>
     <string name="lab_mode_media3">3 · Media3 propio, sin SDK de Mux (reserva)</string>
-    <string name="lab_load_token">Cargar token</string>
-    <string name="lab_token_ready">Token listo — reproductor abajo</string>
+    <string name="lab_load_token">Cargar vídeo</string>
+    <string name="lab_token_ready">Vídeo listo — reproductor abajo</string>
     <string name="lab_token_error">Servidor de tokens inalcanzable (http://10.0.2.2:8787). Arranca tools/token-server.mjs.</string>
-    <string name="lab_no_token">Pulsa «Cargar token» para reproducir. El servidor de tokens corre en tu máquina.</string>
+    <string name="lab_no_token">Pulsa «Cargar vídeo» para reproducir (las compilaciones firmadas piden el token a tu servidor de tokens).</string>
     <string name="lab_counters">Peticiones de Mux Data (solo hosts y contadores)</string>
     <string name="lab_received">Recibidas: %1$d</string>
     <string name="lab_forwarded">Reenviadas: %1$d</string>

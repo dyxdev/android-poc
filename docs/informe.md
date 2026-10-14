@@ -11,11 +11,23 @@
 | Mux Data (`data-media3-at_1_11`, transitiva) | 1.13.2 | (pendiente) |
 | Media3 | 1.11.0 | (pendiente) |
 | AGP / Kotlin / Gradle | 8.7.3 / 2.1.20 / 8.12 | (pendiente) |
-| Compose BOM / Material3 | 2026.09.00 / 1.4.0 | (pendiente) |
+| Compose BOM / Material3 | 2026.06.01 / 1.4.0 | (pendiente) |
 | compileSdk / targetSdk / minSdk | 36 / 36 / 34 | (pendiente) |
 
-Hecho comprobado (2026-10-13, docs públicas): Mux Player 1.6.0 es la última
-(player-releases-android) y declara Media3 1.11.0 + Mux Data 1.13.2.
+Hecho comprobado (2026-10-13, docs públicas): Mux Player 1.6.0 declara Media3 1.11.0 +
+Mux Data 1.13.2. Hecho comprobado (consultado 2026-10-14): 1.7.0 figura ya en
+`maven-metadata.xml` de
+https://muxinc.jfrog.io/artifactory/default-maven-release-local/com/mux/player/android/;
+se mantiene 1.6.0 por decisión de Andy (2026-10-13).
+
+Hecho comprobado (2026-10-14, `dl.google.com/dl/android/maven2`): la BOM `2026.09.00`
+(compose-ui 1.12.1) y la `2026.08.00` (1.12.0) llevan `minCompileSdk=37` y
+`minAndroidGradlePluginVersion=9.1.0` en el `aar-metadata.properties` de `ui-android`; el
+proyecto usa compileSdk 36 (Media3 1.11.0 exige 36) y AGP 8.7.3. Se fija la BOM
+`2026.06.01` (compose-ui 1.11.4, material3 1.4.0): `ui-android`, `material3-android`,
+`foundation-layout-android` y `foundation-android` declaran `minCompileSdk=35` y
+`minAndroidGradlePluginVersion=8.6.0`; `runtime-android`, 34 / 8.1.1. No se subió
+compileSdk, AGP ni Kotlin.
 
 ## 2. Firmas verificadas en código público (rama main, 2026-10-13)
 
@@ -33,11 +45,13 @@ Hecho comprobado (2026-10-13, docs públicas): Mux Player 1.6.0 es la última
   `https://stream.mux.com/{playbackId}.m3u8?token={jwt}` (guía Mux).
 - **Hecho comprobado:** integración en Compose = `AndroidView` + `PlayerView` de Media3.
   Fuente: ejemplo oficial `OfflinePlayerScreen.kt`.
-- **No verificado:** que estas firmas coincidan con la **versión publicada 1.6.0**
-  (se comprobó `main`, no el tag). Primer `./gradlew build` lo confirma o lo desmiente.
-  Riesgo conocido: `IMuxNetworkRequestsCompletion2.onComplete` se implementó como
-  `(Boolean, Map<String, List<String>>?)` por inferencia de `MuxNetwork.kt`; si el tipo del
-  segundo parámetro difiere, el compilador lo dirá.
+- **Hecho comprobado (2026-10-14) contra los `sources.jar` publicados** (player 1.6.0,
+  `data-media3-at_1_11` 1.13.2, `data-media3-custom-at_1_11` 1.13.2, android 1.7.2) y
+  `stats.muxcore` 8.12.0: `INetworkRequest` vive en `muxcore` (no en `stats-sdk-android`);
+  el overload con `IMuxNetworkRequestsCompletion2` es método `default`;
+  `IMuxNetworkRequestsCompletion2.onComplete(boolean, Map<String, List<String>>)` coincide;
+  `ExoPlayerBinding` es `open class` con constructor público sin argumentos; `MuxPlayer`
+  sin binding no pasa la red propia (`MuxPlayer.kt` 1.6.0, líneas 128-136).
 
 ## 3. Resultados por caso (los rellena Andy con las capturas)
 

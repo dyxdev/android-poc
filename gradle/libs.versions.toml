@@ -7,8 +7,8 @@ media3 = "1.11.0"
 agp = "8.7.3"
 kotlin = "2.1.20"
 hilt = "2.56.2"
-composeBom = "2026.09.00"
-material3 = "1.4.0"
+# BOM 2026.06.01 = compose-ui 1.11.4 (minCompileSdk 35). Las BOM 2026.08.00+ (compose 1.12.x) exigen compileSdk 37 y AGP 9.1.
+composeBom = "2026.06.01"
 activityCompose = "1.10.1"
 lifecycle = "2.9.0"
 datastore = "1.1.7"
@@ -45,6 +45,7 @@ turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradle" }

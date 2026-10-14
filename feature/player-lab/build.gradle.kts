@@ -1,5 +1,6 @@
 plugins {
     id("android-library")
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.kapt)
 }
 
@@ -8,10 +9,19 @@ android {
     buildFeatures {
         buildConfig = true
     }
-    // URL del token-server. Por defecto el loopback del emulador local;
-    // para Appetize/Codespaces pásala así:
-    //   ./gradlew assembleDebug -PtokenUrl=https://<tu-forward>.app.github.dev
+    // Por defecto reproduce un playback ID PÚBLICO (sin token ni servidor): el de «mux-1» del
+    // catálogo de test-mux (Mux responde 200 sin firmar, comprobado 2026-10-14).
+    //   ./gradlew assembleDebug -PpublicPlaybackId=<otro id público>
+    // Para el flujo firmado, deja el ID vacío y apunta al token-server (por defecto, el loopback
+    // del emulador; en un dispositivo, una URL que alcance):
+    //   ./gradlew assembleDebug -PpublicPlaybackId= -PtokenUrl=https://<host>
     defaultConfig {
+        buildConfigField(
+            "String",
+            "PUBLIC_PLAYBACK_ID",
+            providers.gradleProperty("publicPlaybackId").map { "\"$it\"" }
+                .getOrElse("\"EcHgOK9coz5K4rjSwOkoE7Y7O01201YMIC200RI6lNxnhs\""),
+        )
         buildConfigField(
             "String",
             "TOKEN_BASE_URL",
@@ -30,7 +40,7 @@ dependencies {
     implementation(platform(libs.compose.bom))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.activity:activity-compose")
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.foundation.layout)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.lifecycle.runtime.compose)

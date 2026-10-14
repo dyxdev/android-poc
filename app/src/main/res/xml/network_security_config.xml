@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Release/main: sin cleartext, sin CA de usuario. El flavor debug lo amplía
-     en src/debug/xml/network_security_config.xml (mismo nombre, merge por flavor). -->
+     en src/debug/res/xml/network_security_config.xml (mismo nombre: el build type debug lo sustituye). -->
 <network-security-config>
     <base-config cleartextTrafficPermitted="false" />
 </network-security-config>

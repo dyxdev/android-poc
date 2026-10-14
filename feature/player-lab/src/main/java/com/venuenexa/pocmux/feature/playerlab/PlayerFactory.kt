@@ -3,7 +3,6 @@ package com.venuenexa.pocmux.feature.playerlab
 import android.content.Context
 import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.exoplayer.ExoPlayer
@@ -19,7 +18,7 @@ import com.mux.stats.sdk.muxstats.INetworkRequest
 // - enableSmartCache(false) como pide el prompt.
 internal object PlayerFactory {
 
-    fun create(context: Context, mode: PlayerMode, gating: INetworkRequest): Player = when (mode) {
+    fun create(context: Context, mode: PlayerMode, gating: INetworkRequest): ExoPlayer = when (mode) {
         PlayerMode.MUX_GATED -> MuxPlayer.Builder(context)
             .addExoPlayerBinding(ExoPlayerBinding())
             .addNetwork(gating)
@@ -35,15 +34,15 @@ internal object PlayerFactory {
     }
 
     @OptIn(UnstableApi::class)
-    fun prepare(player: Player, context: Context, mode: PlayerMode, playbackId: String, token: String) {
+    fun prepare(player: ExoPlayer, context: Context, mode: PlayerMode, playbackId: String, token: String?) {
         when (mode) {
             PlayerMode.MUX_GATED, PlayerMode.MUX_UNGATED -> {
-                // Reproducción firmada: playbackToken verificado en MediaItems.kt (main).
+                // token null = playback público; con token = reproducción firmada (MediaItems.kt, 1.6.0).
                 player.setMediaItem(MediaItems.fromMuxPlaybackId(playbackId, playbackToken = token))
             }
 
             PlayerMode.MEDIA3_ONLY -> {
-                val hlsUrl = "https://stream.mux.com/$playbackId.m3u8?token=$token"
+                val hlsUrl = "https://stream.mux.com/$playbackId.m3u8" + (token?.let { "?token=$it" } ?: "")
                 val source = HlsMediaSource.Factory(DefaultDataSource.Factory(context))
                     .createMediaSource(MediaItem.fromUri(hlsUrl))
                 player.setMediaSource(source)
