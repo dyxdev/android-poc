@@ -10,5 +10,5 @@ android {
 dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    "kapt"(libs.hilt.compiler)
 }

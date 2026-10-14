@@ -17,7 +17,7 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.mux.player)
     implementation(project(":core:common"))
-    kapt(libs.hilt.compiler)
+    "kapt"(libs.hilt.compiler)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)

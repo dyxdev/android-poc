@@ -49,7 +49,7 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.timber)
-    kapt(libs.hilt.compiler)
+    "kapt"(libs.hilt.compiler)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)

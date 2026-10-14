@@ -23,5 +23,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.hilt.android)
     implementation(libs.timber)
-    kapt(libs.hilt.compiler)
+    "kapt"(libs.hilt.compiler)
 }
