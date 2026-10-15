@@ -81,8 +81,10 @@ consentimiento** (ADR-AND-0032), textos EN/ES (ADR-AND-0011), edge-to-edge y acc
 fuente, nunca solo color), `core:designsystem` con el tema y los componentes; las pantallas solo consumen sus tokens.
 
 ## Dependencias nuevas (autorizadas por Andy el 2026-10-15)
-- **Coil** `coil-compose` y `coil-network-okhttp` 3.6.3 (última en Maven Central, consultado 2026-10-15; exige compileSdk 37,
-  que el proyecto ya usa). **Añadidas** a `libs.versions.toml`.
+- **Coil** `coil-compose` y `coil-network-okhttp` **3.3.0**. Se intentó la 3.6.3 (última en Maven Central, consultado
+  2026-10-15) y **falló el build del Codespace**: arrastra Compose 1.12 (pide AGP 9.1; el proyecto usa 8.13.2) y
+  kotlin-stdlib 2.4.10 (el compilador 2.1.20 no lo lee). Desde la 3.4.0 piden stdlib 2.3+; la 3.3.0 (stdlib 2.2.0, Compose
+  1.8.2, `minCompileSdk` 1) es la última compatible. Subir Coil exige subir Kotlin y AGP (decisión aparte).
 - **navigation-compose 2.9.8** y **kotlinx-serialization** (plugin `2.1.20` + librería 1.8.1) para rutas tipadas: se añaden
   con el Detalle. Se usa la 2.9.x porque la 2.10.x exige AGP 9.1 y el proyecto está en AGP 8.13.2 (comprobado 2026-10-15).
 - `material-icons-core` (de la BOM de Compose) para los iconos básicos; el plugin `kotlin-jvm` para `core:model`.

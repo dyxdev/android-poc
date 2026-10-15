@@ -16,8 +16,9 @@ coroutines = "1.10.2"
 timber = "5.0.1"
 # ADR-AND-0008. Última publicada en Maven Central (consultado 2026-10-14).
 appauth = "0.11.1"
-# ADR-AND-0013. Última publicada en Maven Central (consultado 2026-10-15); metadatos Kotlin 2.2, legibles con 2.1.20.
-coil = "3.6.3"
+# ADR-AND-0013. La última compatible con Kotlin 2.1.20 y AGP 8.13: de la 3.4.0 en adelante exigen stdlib 2.3+ y la
+# 3.6.3 arrastra Compose 1.12 (pide AGP 9.1). Medido en el build del Codespace y en los .module de Maven Central, 2026-10-15.
+coil = "3.3.0"
 junit = "4.13.2"
 turbine = "1.2.1"
 ktlintGradle = "12.1.2"
