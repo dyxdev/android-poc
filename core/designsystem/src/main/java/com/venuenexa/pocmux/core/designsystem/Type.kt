@@ -1,6 +1,7 @@
 package com.venuenexa.pocmux.core.designsystem
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontVariation
@@ -8,6 +9,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 // Outfit (SIL OFL, ver OFL-Outfit.txt) como fuente variable: un solo archivo y un peso por instancia.
+// Font(..., variationSettings) sigue marcada @ExperimentalTextApi en Compose 1.11 (comprobado en sus fuentes).
+@OptIn(ExperimentalTextApi::class)
 private fun outfit(weight: FontWeight) =
     Font(
         resId = R.font.outfit,
