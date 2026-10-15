@@ -1,0 +1,45 @@
+{
+  "realm": "venuenexa",
+  "displayName": "VenueNexa (pruebas)",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": true,
+  "loginWithEmailAllowed": true,
+  "resetPasswordAllowed": true,
+  "bruteForceProtected": true,
+  "revokeRefreshToken": true,
+  "refreshTokenMaxReuse": 0,
+  "accessTokenLifespan": 180,
+  "internationalizationEnabled": true,
+  "supportedLocales": ["es", "en"],
+  "defaultLocale": "es",
+  "clients": [
+    {
+      "clientId": "venuenexa-android",
+      "name": "VenueNexa Android (pruebas)",
+      "protocol": "openid-connect",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": ["com.venuenexa.pocmux:/oauth2redirect"],
+      "webOrigins": [],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "com.venuenexa.pocmux:/logout"
+      }
+    }
+  ],
+  "users": [
+    {
+      "username": "demo",
+      "enabled": true,
+      "email": "demo@example.test",
+      "emailVerified": true,
+      "firstName": "Demo",
+      "lastName": "VenueNexa"
+    }
+  ]
+}
