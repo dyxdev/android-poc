@@ -91,8 +91,11 @@ AGP 8.13.2 se probó hasta compileSdk 36.1: `android.suppressUnsupportedCompileS
   con `success=false` el núcleo re-encola el lote pendiente en memoria (hasta 3600 eventos;
   por encima los descarta) y lo reintenta. La puerta completa con `false` al descartar, así
   que lo recogido sin consentimiento podría enviarse después de conceder (caso C, OFF→ON).
-  Contradice «sin cola» de arriba; **decisión pendiente de Andy** (completar con `true` o
-  documentar el comportamiento).
+  Contradice «sin cola» de arriba. **Decidido por Andy (2026-10-15): completar con `true`** al
+  descartar: el núcleo da el envío por hecho y vacía el lote (rama de éxito de `onComplete`:
+  `pendingEventsQueue.clear()`), así que nada se acumula ni se reintenta. Cambio aplicado en
+  `ConsentGatingNetworkRequest` y en su test. **Sin comprobar en dispositivo** (caso C: conceder tras
+  haber reproducido sin consentimiento y verificar con mitmproxy que no sale nada anterior).
 - ¿Qué no se pudo verificar? Ningún caso de red (requiere dispositivo/emulador + claves de
   Andy). Compilación y árbitros: ver §6.
 

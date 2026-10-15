@@ -100,9 +100,9 @@ class ConsentGatingNetworkRequestTest {
         assertEquals(0, fake.posts)
         assertEquals(0, fake.completions1)
         assertEquals(0, fake.completions2)
-        // Al descartar se completa como fallo para no colgar callbacks.
-        assertEquals(false, c1)
-        assertEquals(false, c2)
+        // Al descartar se completa con éxito: con false el núcleo de Mux re-encolaría y reintentaría el lote.
+        assertEquals(true, c1)
+        assertEquals(true, c2)
         val counters = gate.counters.value
         assertEquals(4, counters.received)
         assertEquals(0, counters.forwarded)
