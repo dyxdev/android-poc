@@ -17,6 +17,10 @@ data class Tokens(
 // línea, los tokens en Base64 URL. Otra versión o forma se trata como sesión no válida.
 internal object TokenCodec {
     private const val VERSION = "v1"
+    private const val ACCESS_LINE = 1
+    private const val REFRESH_LINE = 2
+    private const val ID_LINE = 3
+    private const val EXPIRES_LINE = 4
     private const val LINES = 5
 
     fun encode(tokens: Tokens): String =
@@ -33,22 +37,20 @@ internal object TokenCodec {
         return if (lines.size == LINES && lines[0] == VERSION) decodeLines(lines) else null
     }
 
-    private fun decodeLines(lines: List<String>): Tokens? {
-        // Sin índices sueltos: versión, acceso, refresh, identidad y caducidad, en el orden de encode.
-        val (_, access, refresh, id, expiresRaw) = lines
-        return try {
-            val accessToken = decodeField(access)
+    private fun decodeLines(lines: List<String>): Tokens? =
+        try {
+            val accessToken = decodeField(lines[ACCESS_LINE])
+            val expiresRaw = lines[EXPIRES_LINE]
             val expires = expiresRaw.toLongOrNull()
             if (accessToken == null || (expiresRaw.isNotEmpty() && expires == null)) {
                 null
             } else {
-                Tokens(accessToken, decodeField(refresh), decodeField(id), expires)
+                Tokens(accessToken, decodeField(lines[REFRESH_LINE]), decodeField(lines[ID_LINE]), expires)
             }
         } catch (ignored: IllegalArgumentException) {
             // Base64 dañado: se trata como sesión no válida.
             null
         }
-    }
 
     private fun encodeField(value: String?): String =
         value?.let { Base64.getUrlEncoder().withoutPadding().encodeToString(it.toByteArray()) }.orEmpty()
