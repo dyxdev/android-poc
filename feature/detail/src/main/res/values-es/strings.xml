@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="detail_back">Volver</string>
+    <string name="detail_photo_counter">%1$d / %2$d</string>
+    <string name="detail_figure_capacity">Personas</string>
+    <string name="detail_figure_price">Por día</string>
+    <string name="detail_figure_reviews">Opiniones</string>
+    <string name="detail_tour_title">Vídeo tour</string>
+    <string name="detail_tour_play">Ver el tour</string>
+    <string name="detail_analytics_on">Analítica de reproducción: activada</string>
+    <string name="detail_analytics_off">Analítica de reproducción: desactivada (se activa en Cuenta)</string>
+    <string name="detail_reserve">Reservar</string>
+    <string name="detail_reserve_soon">La reserva llega en una próxima entrega</string>
+    <string name="detail_not_found">Este espacio ya no está disponible</string>
+</resources>

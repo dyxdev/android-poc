@@ -22,6 +22,7 @@ la cuenta, porque es la evidencia de ADR-AND-0032.
 | Inicio | **Híbrido**: cabecera (wordmark + acceso a Cuenta), búsqueda, chips de categoría, carrusel de destacados con tira de fotos (PhoneTab) y lista vertical con corazón (ETA) |
 | Bienvenida «Explorar / Iniciar sesión» | Solo la primera vez (**pendiente de construir**, entrega de Cuenta) |
 | Dependencias nuevas | Autorizadas («las cuatro»): Coil, navigation-compose, kotlinx-serialization (rutas tipadas) |
+| Cambio de contexto (invitado/propietario/admin) | **Opción A** (Andy, 2026-10-15): capacidades simuladas en local con el usuario `demo`, **después de aprobar Inicio**. Conmutador **híbrido** (Andy, 2026-10-15): una hoja inferior de contextos con tres entradas (etiqueta tocable en la cabecera, avatar y bloque en Cuenta); **sin** apertura automática tras el login. Exige UI cuidada y mejor UX. Hint de primera vez (Andy, 2026-10-15): **A+C**, globo anclado a la etiqueta + punto de aviso, una sola vez; vuelve a salir una vez por cada contexto nuevo (Andy, 2026-10-15) |
 | Orden | **Solo Inicio primero**; capturas reales en el móvil de Andy y **aprobación explícita** antes de Detalle, Cuenta y bienvenida |
 
 ## Referencias (vistas el 2026-10-15; las imágenes no se guardan en el repo: son de terceros)
@@ -90,12 +91,32 @@ fuente, nunca solo color), `core:designsystem` con el tema y los componentes; la
 - `material-icons-core` (de la BOM de Compose) para los iconos básicos; el plugin `kotlin-jvm` para `core:model`.
 - Fuente **Outfit** (SIL OFL) empaquetada en `res/font` (variable, un solo archivo; licencia en `OFL-Outfit.txt`).
 
-## Estado de Inicio (2026-10-15) y siguiente paso
-Escrito, **sin compilar ni verlo en un dispositivo**: `core:model`, `core:data` (9 venues de ejemplo, latencia simulada de
-700 ms), `core:designsystem` (tema, tipografía, espaciado, wordmark, entrada escalonada, brillo de carga, foto con Coil,
-botón de guardar con resorte, valoración, disponibilidad, buscador, chips) y `feature:home` (+ pruebas del ViewModel).
-En `:app`: barra inferior Inicio/Cuenta (Cuenta = el laboratorio actual), borde a borde, tema claro de ventana.
-Decisiones de detalle de esta entrega (revisables al ver las capturas): chips con nombres cortos (Bodas, Corporativo,
-Sesiones, Cumpleaños, Reuniones, Pop-up) en lugar de los de la web; pulsar una tarjeta muestra un aviso «la ficha llega
-en la siguiente entrega»; guardados solo en memoria; sin saludo con nombre (pide ampliar la sesión de identidad).
-Siguiente: compilar en el Codespace, capturas reales en el móvil de Andy y **su aprobación explícita** antes del resto.
+## Estado (2026-10-15)
+- **Inicio:** compilado e instalado en el móvil de Andy («se instaló bien»). Andy lo dio por bueno para seguir («ya puedes
+  comenzar con la implementación»); su única observación fue que la UI va **un poco lenta** (sin medir: se propuso
+  compilar un release firmado con la clave de debug y comparar). Decisiones de detalle revisables: chips con nombres cortos,
+  guardados en memoria, sin saludo con nombre.
+- **Detalle (bloque 1 de la implementación):** escrito, **sin compilar ni probar**. `feature:detail` (galería con contador,
+  cabecera, tres cifras que cuentan, vídeo tour con Mux Player + puerta de consentimiento y estado de la analítica,
+  barra «Reservar»), `navigation-compose` con rutas tipadas en `:app` y transición compartida de la foto
+  (tarjeta → detalle). «Reservar» muestra un aviso: la reserva y el pago llegan en una entrega posterior.
+  Guardados compartidos entre Inicio y Detalle (`SavedVenuesRepository`, en memoria).
+- **Cuenta, bienvenida y contextos (bloque 2, Andy pidió terminarlo todo y compilar y probar de una vez):** escrito,
+  **sin compilar ni probar**.
+  - **Cuenta** (`feature:account`): tarjeta de sesión (invitado, o con sesión y cuándo caduca; sin nombre porque la
+    identidad aún no lo trae), iniciar sesión con Keycloak o Google, cerrar sesión (vacía las cachés de imágenes de Coil,
+    ADR-AND-0013), perfil activo, privacidad (consentimiento de la analítica de Mux) y **Diagnóstico**.
+  - **Diagnóstico:** acceso al laboratorio de Mux, **simulador de capacidades** (conceder o revocar «Propietario») y
+    «Restablecer bienvenida y avisos».
+  - **Bienvenida** «Explorar / Iniciar sesión», solo la primera vez (preferencia en DataStore); collage con las portadas
+    de los venues destacados.
+  - **Cambio de contexto** (decisiones de Andy, 2026-10-15): capacidades **simuladas** (`core:context`); conmutador
+    híbrido con **una sola hoja** y tres entradas (etiqueta de perfil en la cabecera, avatar de Inicio y bloque en Cuenta),
+    **sin** apertura automática tras el login; hint de primera vez **A+C** (globo anclado + punto en la etiqueta), una vez
+    por cada contexto nuevo; el último contexto y la última pestaña de cada contexto se recuerdan.
+  - **Panel de propietario** (`feature:owner`): **de ejemplo** (cifras ficticias y dos espacios del catálogo); existe para
+    ver el cambio de contexto, no es la funcionalidad real.
+  - Decisiones mías, reversibles: el contexto de cliente se llama **«Cliente»** (Andy dijo «cliente»); la administración
+    queda fuera por ahora (el usuario `demo` tiene dos contextos); la sesión se restaura al arrancar la app.
+- **Pendiente:** Explorar y Guardados, reservas y pago, medir la lentitud de la UI (release firmado con la clave de
+  debug), Paparazzi o similar para capturas, y todo lo que dependa de la API real (capacidades, step-up).

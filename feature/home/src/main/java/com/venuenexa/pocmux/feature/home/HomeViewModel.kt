@@ -2,6 +2,7 @@ package com.venuenexa.pocmux.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.venuenexa.pocmux.core.data.SavedVenuesRepository
 import com.venuenexa.pocmux.core.data.VenueRepository
 import com.venuenexa.pocmux.core.model.Venue
 import com.venuenexa.pocmux.core.model.VenueCategory
@@ -16,22 +17,22 @@ import javax.inject.Inject
 
 private const val STOP_TIMEOUT_MS = 5_000L
 
-// Estado de Inicio: catálogo + búsqueda + categoría + guardados (solo en memoria en esta entrega).
+// Estado de Inicio: catálogo + búsqueda + categoría + guardados (compartidos con el Detalle, en memoria).
 @HiltViewModel
 class HomeViewModel
     @Inject
     constructor(
         repository: VenueRepository,
+        private val savedVenues: SavedVenuesRepository,
     ) : ViewModel() {
         private val catalog: StateFlow<List<Venue>?> =
             repository.venues().stateIn(viewModelScope, SharingStarted.Lazily, null)
         private val query = MutableStateFlow("")
         private val category = MutableStateFlow<VenueCategory?>(null)
-        private val saved = MutableStateFlow<Set<String>>(emptySet())
         private val introPlayed = MutableStateFlow(false)
 
         val uiState: StateFlow<HomeUiState> =
-            combine(catalog, query, category, saved, introPlayed) { venues, q, c, s, played ->
+            combine(catalog, query, category, savedVenues.savedIds, introPlayed) { venues, q, c, s, played ->
                 val all = venues.orEmpty()
                 HomeUiState(
                     isLoading = venues == null,
@@ -54,7 +55,7 @@ class HomeViewModel
             category.update { null }
         }
 
-        fun onToggleSaved(venueId: String) = saved.update { if (venueId in it) it - venueId else it + venueId }
+        fun onToggleSaved(venueId: String) = savedVenues.toggle(venueId)
 
         fun onIntroPlayed() = introPlayed.update { true }
     }

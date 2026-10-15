@@ -51,7 +51,7 @@ internal fun LazyListScope.homeContent(
                 VenueListCard(
                     venue = venue,
                     saved = venue.id in state.savedIds,
-                    onClick = { actions.onVenueClick(venue.id) },
+                    onClick = { key -> actions.onVenueClick(venue.id, key) },
                     onToggleSaved = { actions.onToggleSaved(venue.id) },
                 )
             }
@@ -78,7 +78,7 @@ private fun FeaturedSection(
                     FeaturedVenueCard(
                         venue = venue,
                         saved = venue.id in state.savedIds,
-                        onClick = { actions.onVenueClick(venue.id) },
+                        onClick = { key -> actions.onVenueClick(venue.id, key) },
                         onToggleSaved = { actions.onToggleSaved(venue.id) },
                     )
                 }

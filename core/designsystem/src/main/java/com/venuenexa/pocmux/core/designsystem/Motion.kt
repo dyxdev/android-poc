@@ -22,10 +22,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import kotlin.math.roundToInt
 
 private const val STAGGER_MS = 60L
 private const val ENTRANCE_MS = 320
 private const val SHIMMER_MS = 1200
+private const val COUNT_MS = 700
 private val EntranceOffset = 24.dp
 
 // Entrada escalonada: aparece con un fundido y un pequeño desplazamiento, retrasada según su posición.
@@ -83,4 +85,15 @@ fun ShimmerBox(modifier: Modifier = Modifier) {
                 )
             },
     )
+}
+
+// Cifra que cuenta desde 0 hasta su valor al aparecer (una vez por composición). Sigue la escala de animación del
+// sistema: con «Quitar animaciones» muestra el valor final al instante.
+@Composable
+fun animatedCount(target: Int): Int {
+    val progress = remember { Animatable(0f) }
+    LaunchedEffect(target) {
+        progress.animateTo(1f, tween(durationMillis = COUNT_MS, easing = FastOutSlowInEasing))
+    }
+    return (target * progress.value).roundToInt()
 }

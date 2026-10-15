@@ -2,6 +2,8 @@ package com.venuenexa.pocmux.feature.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.venuenexa.pocmux.core.context.ContextState
+import com.venuenexa.pocmux.core.context.ContextSwitcher
 import com.venuenexa.pocmux.core.designsystem.VenueNexaTheme
 import com.venuenexa.pocmux.core.model.Venue
 import com.venuenexa.pocmux.core.model.VenueCategory
@@ -13,7 +15,10 @@ private val SampleVenues =
         sampleVenue(id = "c", name = "Villa Mirador", city = "Málaga", isAvailable = false),
     )
 
-private val NoActions = HomeActions({}, {}, {}, {}, {}, {})
+private val NoActions = HomeActions({ _, _ -> }, {}, {}, {}, {}, {})
+
+// Un solo contexto: la etiqueta de perfil no aparece.
+private val NoSwitcher = ContextSwitcher(ContextState(), {}, {})
 
 private fun sampleVenue(
     id: String,
@@ -41,6 +46,7 @@ private fun HomeLoadedPreview() {
     VenueNexaTheme {
         HomeScreen(
             state = HomeUiState(isLoading = false, featured = SampleVenues, venues = SampleVenues, playIntro = false),
+            switcher = NoSwitcher,
             actions = NoActions,
         )
     }
@@ -52,6 +58,7 @@ private fun HomeLargeFontPreview() {
     VenueNexaTheme {
         HomeScreen(
             state = HomeUiState(isLoading = false, featured = SampleVenues, venues = SampleVenues, playIntro = false),
+            switcher = NoSwitcher,
             actions = NoActions,
         )
     }
@@ -60,7 +67,7 @@ private fun HomeLargeFontPreview() {
 @Preview(name = "Inicio, cargando", showBackground = true, widthDp = 360, heightDp = 780)
 @Composable
 private fun HomeLoadingPreview() {
-    VenueNexaTheme { HomeScreen(state = HomeUiState(), actions = NoActions) }
+    VenueNexaTheme { HomeScreen(state = HomeUiState(), switcher = NoSwitcher, actions = NoActions) }
 }
 
 @Preview(name = "Inicio, sin resultados", showBackground = true, widthDp = 360, heightDp = 780)
@@ -69,6 +76,7 @@ private fun HomeEmptyPreview() {
     VenueNexaTheme {
         HomeScreen(
             state = HomeUiState(isLoading = false, query = "zzz", playIntro = false),
+            switcher = NoSwitcher,
             actions = NoActions,
         )
     }

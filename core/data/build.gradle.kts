@@ -9,6 +9,7 @@ android {
 
 dependencies {
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.datastore.preferences)
     implementation(libs.hilt.android)
     implementation(project(":core:model"))
     "kapt"(libs.hilt.compiler)

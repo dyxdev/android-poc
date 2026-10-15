@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="context_guest_title">Customer</string>
+    <string name="context_guest_description">Search, save and book venues</string>
+    <string name="context_owner_title">Owner</string>
+    <string name="context_owner_description">Publish and manage your venues</string>
+    <string name="context_sheet_title">Switch profile</string>
+    <string name="context_sheet_subtitle">Your session stays open</string>
+    <string name="context_current">Current</string>
+    <string name="context_label_description">Active profile: %1$s. Tap to switch</string>
+    <string name="context_hint">You have more than one profile. Tap here to switch without signing in again.</string>
+    <string name="context_hint_ok">Got it</string>
+</resources>

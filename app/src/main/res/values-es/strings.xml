@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">VenueNexa</string>
     <string name="nav_home">Inicio</string>
+    <string name="nav_panel">Panel</string>
     <string name="nav_account">Cuenta</string>
-    <string name="detail_soon">La ficha del espacio llega en la siguiente entrega</string>
 </resources>

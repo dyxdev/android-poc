@@ -16,11 +16,12 @@ fun VenuePhoto(
     url: String,
     contentDescription: String?,
     modifier: Modifier = Modifier,
+    sharedKey: String? = null,
 ) {
     SubcomposeAsyncImage(
         model = url,
         contentDescription = contentDescription,
-        modifier = modifier,
+        modifier = modifier.sharedPhoto(sharedKey),
         contentScale = ContentScale.Crop,
         loading = { ShimmerBox(Modifier.fillMaxSize()) },
         error = { Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceVariant)) },

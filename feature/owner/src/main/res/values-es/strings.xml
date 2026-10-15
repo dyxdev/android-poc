@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="owner_title">Panel de propietario</string>
+    <string name="owner_sample_note">Datos de ejemplo: el panel real llega con la API</string>
+    <string name="owner_figure_pending">Reservas pendientes</string>
+    <string name="owner_figure_income">Ingresos del mes</string>
+    <string name="owner_figure_venues">Espacios</string>
+    <string name="owner_my_venues">Mis espacios</string>
+</resources>

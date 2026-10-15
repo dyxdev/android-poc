@@ -26,6 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.venuenexa.pocmux.core.context.ContextLabel
+import com.venuenexa.pocmux.core.context.ContextSwitcher
+import com.venuenexa.pocmux.core.context.rememberContextSwitcher
 import com.venuenexa.pocmux.core.designsystem.CategoryChip
 import com.venuenexa.pocmux.core.designsystem.SearchField
 import com.venuenexa.pocmux.core.designsystem.VenueNexaWordmark
@@ -34,7 +37,7 @@ import com.venuenexa.pocmux.core.model.VenueCategory
 
 @Composable
 fun HomeRoute(
-    onVenueClick: (String) -> Unit,
+    onVenueClick: (String, String) -> Unit,
     onAccountClick: () -> Unit,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
@@ -47,6 +50,7 @@ fun HomeRoute(
     }
     HomeScreen(
         state = state,
+        switcher = rememberContextSwitcher(),
         actions =
             HomeActions(
                 onVenueClick = onVenueClick,
@@ -64,6 +68,7 @@ fun HomeRoute(
 @Composable
 fun HomeScreen(
     state: HomeUiState,
+    switcher: ContextSwitcher,
     actions: HomeActions,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
@@ -76,7 +81,11 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(gutter),
     ) {
         item {
-            HomeHeader(onAccountClick = actions.onAccountClick, modifier = Modifier.padding(horizontal = gutter))
+            HomeHeader(
+                switcher = switcher,
+                onAccountClick = actions.onAccountClick,
+                modifier = Modifier.padding(horizontal = gutter),
+            )
         }
         item {
             SearchField(
@@ -94,6 +103,7 @@ fun HomeScreen(
 
 @Composable
 private fun HomeHeader(
+    switcher: ContextSwitcher,
     onAccountClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -103,8 +113,12 @@ private fun HomeHeader(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         VenueNexaWordmark()
-        IconButton(onClick = onAccountClick) {
-            Icon(Icons.Outlined.Person, contentDescription = stringResource(R.string.home_account))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            ContextLabel(switcher = switcher)
+            // Con más de un perfil, el avatar abre la hoja de perfiles; si no, lleva a la cuenta.
+            IconButton(onClick = { if (switcher.state.canSwitch) switcher.onOpen() else onAccountClick() }) {
+                Icon(Icons.Outlined.Person, contentDescription = stringResource(R.string.home_account))
+            }
         }
     }
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="venue_price_per_day">%1$s / day</string>
+    <string name="venue_capacity">Up to %1$d guests</string>
+    <string name="venue_available">Available</string>
+    <string name="venue_unavailable">Unavailable</string>
+    <string name="venue_save">Save %1$s</string>
+    <string name="venue_unsave">Remove %1$s from saved</string>
+    <string name="venue_photo_description">Photo of %1$s</string>
+</resources>

@@ -1,5 +1,6 @@
 package com.venuenexa.pocmux.feature.home
 
+import com.venuenexa.pocmux.core.data.InMemorySavedVenuesRepository
 import com.venuenexa.pocmux.core.data.VenueRepository
 import com.venuenexa.pocmux.core.model.Venue
 import com.venuenexa.pocmux.core.model.VenueCategory
@@ -8,6 +9,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
@@ -58,6 +60,8 @@ private class FakeVenueRepository : VenueRepository {
             delay(LATENCY_MS)
             emit(Catalog)
         }
+
+    override fun venue(id: String): Flow<Venue?> = flowOf(Catalog.firstOrNull { it.id == id })
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -77,7 +81,7 @@ class HomeViewModelTest {
 
     // uiState usa stateIn(WhileSubscribed): sin colector el valor no se actualiza.
     private fun TestScope.loadedViewModel(): HomeViewModel {
-        val vm = HomeViewModel(FakeVenueRepository())
+        val vm = HomeViewModel(FakeVenueRepository(), InMemorySavedVenuesRepository())
         backgroundScope.launch(dispatcher) { vm.uiState.collect {} }
         testScheduler.advanceTimeBy(LATENCY_MS + 1)
         testScheduler.runCurrent()
@@ -87,7 +91,7 @@ class HomeViewModelTest {
     @Test
     fun startsLoading_thenShowsCatalogWithFeatured() =
         runTest {
-            val vm = HomeViewModel(FakeVenueRepository())
+            val vm = HomeViewModel(FakeVenueRepository(), InMemorySavedVenuesRepository())
             backgroundScope.launch(dispatcher) { vm.uiState.collect {} }
             testScheduler.runCurrent()
             assertTrue(vm.uiState.value.isLoading)

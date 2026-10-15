@@ -9,7 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import com.venuenexa.pocmux.core.designsystem.VenueNexaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-// Actividad única: dibuja de borde a borde y pone el tema de VenueNexa. La navegación vive en AppShell.
+// Actividad única: dibuja de borde a borde y pone el tema de VenueNexa. La bienvenida y la navegación viven en AppRoot.
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge(statusBarStyle = lightBars, navigationBarStyle = lightBars)
         setContent {
             VenueNexaTheme {
-                AppShell()
+                AppRoot()
             }
         }
     }

@@ -26,8 +26,11 @@ import com.venuenexa.pocmux.core.designsystem.AvailabilityLabel
 import com.venuenexa.pocmux.core.designsystem.RatingLabel
 import com.venuenexa.pocmux.core.designsystem.SaveButton
 import com.venuenexa.pocmux.core.designsystem.VenuePhoto
+import com.venuenexa.pocmux.core.designsystem.formatPrice
+import com.venuenexa.pocmux.core.designsystem.formatRating
 import com.venuenexa.pocmux.core.designsystem.spacing
 import com.venuenexa.pocmux.core.model.Venue
+import com.venuenexa.pocmux.core.designsystem.R as DsR
 
 private val FeaturedWidth = 280.dp
 private val ThumbnailSize = 104.dp
@@ -45,12 +48,13 @@ private fun venueCardBorder() = BorderStroke(1.dp, MaterialTheme.colorScheme.out
 fun FeaturedVenueCard(
     venue: Venue,
     saved: Boolean,
-    onClick: () -> Unit,
+    onClick: (sharedKey: String) -> Unit,
     onToggleSaved: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val photoKey = "featured-${venue.id}"
     Card(
-        onClick = onClick,
+        onClick = { onClick(photoKey) },
         modifier = modifier.width(FeaturedWidth),
         shape = MaterialTheme.shapes.large,
         colors = venueCardColors(),
@@ -60,7 +64,7 @@ fun FeaturedVenueCard(
             modifier = Modifier.padding(MaterialTheme.spacing.sm),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.sm),
         ) {
-            PhotoStrip(venue = venue)
+            PhotoStrip(venue = venue, photoKey = photoKey)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 VenueSummary(venue = venue, modifier = Modifier.weight(1f))
                 SaveToggle(venue = venue, saved = saved, onToggleSaved = onToggleSaved)
@@ -74,12 +78,13 @@ fun FeaturedVenueCard(
 fun VenueListCard(
     venue: Venue,
     saved: Boolean,
-    onClick: () -> Unit,
+    onClick: (sharedKey: String) -> Unit,
     onToggleSaved: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val photoKey = "list-${venue.id}"
     Card(
-        onClick = onClick,
+        onClick = { onClick(photoKey) },
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
         colors = venueCardColors(),
@@ -92,8 +97,9 @@ fun VenueListCard(
         ) {
             VenuePhoto(
                 url = venue.photos.first(),
-                contentDescription = stringResource(R.string.venue_photo_description, venue.name),
+                contentDescription = stringResource(DsR.string.venue_photo_description, venue.name),
                 modifier = Modifier.size(ThumbnailSize).clip(MaterialTheme.shapes.small),
+                sharedKey = photoKey,
             )
             VenueSummary(venue = venue, modifier = Modifier.weight(1f))
             SaveToggle(venue = venue, saved = saved, onToggleSaved = onToggleSaved)
@@ -102,8 +108,11 @@ fun VenueListCard(
 }
 
 @Composable
-private fun PhotoStrip(venue: Venue) {
-    val description = stringResource(R.string.venue_photo_description, venue.name)
+private fun PhotoStrip(
+    venue: Venue,
+    photoKey: String,
+) {
+    val description = stringResource(DsR.string.venue_photo_description, venue.name)
     Row(
         modifier = Modifier.fillMaxWidth().aspectRatio(STRIP_ASPECT).clip(MaterialTheme.shapes.small),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs),
@@ -112,6 +121,7 @@ private fun PhotoStrip(venue: Venue) {
             url = venue.photos.first(),
             contentDescription = description,
             modifier = Modifier.weight(STRIP_MAIN_WEIGHT).fillMaxHeight(),
+            sharedKey = photoKey,
         )
         Column(
             modifier = Modifier.weight(1f).fillMaxHeight(),
@@ -137,7 +147,7 @@ private fun VenueSummary(
             color = MaterialTheme.colorScheme.onSurface,
         )
         Text(
-            text = "${venue.city} · ${stringResource(R.string.venue_capacity, venue.capacity)}",
+            text = "${venue.city} · ${stringResource(DsR.string.venue_capacity, venue.capacity)}",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -147,12 +157,15 @@ private fun VenueSummary(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xs),
         ) {
             Text(
-                text = stringResource(R.string.venue_price_per_day, formatPrice(venue.pricePerDay, locale)),
+                text = stringResource(DsR.string.venue_price_per_day, formatPrice(venue.pricePerDay, locale)),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.tertiary,
             )
             AvailabilityLabel(
-                text = stringResource(if (venue.isAvailable) R.string.venue_available else R.string.venue_unavailable),
+                text =
+                    stringResource(
+                        if (venue.isAvailable) DsR.string.venue_available else DsR.string.venue_unavailable,
+                    ),
                 available = venue.isAvailable,
             )
         }
@@ -169,6 +182,6 @@ private fun SaveToggle(
         saved = saved,
         onToggle = onToggleSaved,
         contentDescription =
-            stringResource(if (saved) R.string.venue_unsave else R.string.venue_save, venue.name),
+            stringResource(if (saved) DsR.string.venue_unsave else DsR.string.venue_save, venue.name),
     )
 }

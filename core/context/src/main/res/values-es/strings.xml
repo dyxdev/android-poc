@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="context_guest_title">Cliente</string>
+    <string name="context_guest_description">Busca, guarda y reserva espacios</string>
+    <string name="context_owner_title">Propietario</string>
+    <string name="context_owner_description">Publica y gestiona tus espacios</string>
+    <string name="context_sheet_title">Cambiar de perfil</string>
+    <string name="context_sheet_subtitle">Tu sesión sigue abierta</string>
+    <string name="context_current">Actual</string>
+    <string name="context_label_description">Perfil activo: %1$s. Toca para cambiar</string>
+    <string name="context_hint">Tienes más de un perfil. Toca aquí para cambiar sin volver a entrar.</string>
+    <string name="context_hint_ok">Entendido</string>
+</resources>

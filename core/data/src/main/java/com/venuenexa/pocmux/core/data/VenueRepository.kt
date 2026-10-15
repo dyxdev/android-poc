@@ -7,4 +7,7 @@ import kotlinx.coroutines.flow.Flow
 // la sustituirá sin cambiar a los consumidores.
 interface VenueRepository {
     fun venues(): Flow<List<Venue>>
+
+    // Un venue por ID; null si no existe. El detalle lo pide al abrirse.
+    fun venue(id: String): Flow<Venue?>
 }
