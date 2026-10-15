@@ -18,5 +18,6 @@ rootProject.name = "poc-android-mux"
 include(":app")
 include(":core:consent")
 include(":core:common")
+include(":core:identity")
 include(":core:testing")
 include(":feature:player-lab")

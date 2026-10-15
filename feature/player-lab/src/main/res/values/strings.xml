@@ -17,4 +17,18 @@
     <string name="lab_method_row">%1$s — received %2$d, forwarded %3$d</string>
     <string name="lab_host_row">%1$s — %2$d requests</string>
     <string name="lab_reset">Reset counters</string>
+    <string name="identity_title">Account (Keycloak)</string>
+    <string name="identity_unknown">Checking session…</string>
+    <string name="identity_signed_out">Signed out</string>
+    <string name="identity_signed_in">Signed in</string>
+    <string name="identity_signed_in_until">Signed in · access token expires at %1$s</string>
+    <string name="identity_sign_in">Sign in</string>
+    <string name="identity_sign_in_google">Sign in with Google</string>
+    <string name="identity_refresh">Renew token</string>
+    <string name="identity_sign_out">Sign out</string>
+    <string name="identity_error_not_configured">Keycloak is not configured. Build with -PkeycloakIssuer and -PkeycloakClientId.</string>
+    <string name="identity_error_canceled">Sign-in canceled.</string>
+    <string name="identity_error_session_expired">The session expired or was revoked. Sign in again.</string>
+    <string name="identity_error_network">Could not reach Keycloak.</string>
+    <string name="identity_error_failed">Sign-in failed.</string>
 </resources>

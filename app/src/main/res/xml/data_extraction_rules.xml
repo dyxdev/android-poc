@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ADR-AND-0008: la sesión (tokens cifrados en DataStore) no sale del dispositivo: ni copia en la
+     nube ni transferencia a otro dispositivo. DataStore vive en files/datastore. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="file" path="datastore" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="file" path="datastore" />
+    </device-transfer>
+</data-extraction-rules>
