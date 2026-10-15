@@ -30,12 +30,20 @@ internal object TokenCodec {
 
     fun decode(raw: String): Tokens? {
         val lines = raw.split("\n")
-        if (lines.size != LINES || lines[0] != VERSION) return null
+        return if (lines.size == LINES && lines[0] == VERSION) decodeLines(lines) else null
+    }
+
+    private fun decodeLines(lines: List<String>): Tokens? {
+        // Sin índices sueltos: versión, acceso, refresh, identidad y caducidad, en el orden de encode.
+        val (_, access, refresh, id, expiresRaw) = lines
         return try {
-            val access = decodeField(lines[1]) ?: return null
-            val expiresRaw = lines[4]
-            val expires = if (expiresRaw.isEmpty()) null else expiresRaw.toLongOrNull() ?: return null
-            Tokens(access, decodeField(lines[2]), decodeField(lines[3]), expires)
+            val accessToken = decodeField(access)
+            val expires = expiresRaw.toLongOrNull()
+            if (accessToken == null || (expiresRaw.isNotEmpty() && expires == null)) {
+                null
+            } else {
+                Tokens(accessToken, decodeField(refresh), decodeField(id), expires)
+            }
         } catch (ignored: IllegalArgumentException) {
             // Base64 dañado: se trata como sesión no válida.
             null

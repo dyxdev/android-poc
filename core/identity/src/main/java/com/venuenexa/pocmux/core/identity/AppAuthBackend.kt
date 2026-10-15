@@ -108,24 +108,6 @@ class AppAuthBackend
             }
         }
 
-        private fun postForm(
-            endpoint: String,
-            body: String,
-        ) {
-            val connection = URL(endpoint).openConnection() as HttpURLConnection
-            try {
-                connection.requestMethod = "POST"
-                connection.doOutput = true
-                connection.connectTimeout = TIMEOUT_MS
-                connection.readTimeout = TIMEOUT_MS
-                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
-                connection.outputStream.use { it.write(body.toByteArray()) }
-                check(connection.responseCode in HTTP_OK_RANGE) { "HTTP ${connection.responseCode}" }
-            } finally {
-                connection.disconnect()
-            }
-        }
-
         override suspend fun endSessionIntent(idTokenHint: String?): Intent? {
             val serviceConfiguration = serviceConfiguration()
             if (serviceConfiguration.endSessionEndpoint == null) return null
@@ -176,26 +158,46 @@ class AppAuthBackend
                 }
             }
 
-        // invalid_grant = refresh token caducado, ya usado o revocado (otro dispositivo, cierre de cuenta).
-        private fun failure(exception: AuthorizationException?): IdentityException {
-            val error =
-                when {
-                    exception == null -> IdentityError.FAILED
-                    isInvalidGrant(exception) -> IdentityError.SESSION_EXPIRED
-                    exception == AuthorizationException.GeneralErrors.NETWORK_ERROR -> IdentityError.NETWORK
-                    else -> IdentityError.FAILED
-                }
-            return IdentityException(error, exception)
-        }
-
-        private fun isInvalidGrant(exception: AuthorizationException): Boolean =
-            exception.type == AuthorizationException.TYPE_OAUTH_TOKEN_ERROR && exception.error == INVALID_GRANT
-
         private companion object {
             const val KC_IDP_HINT = "kc_idp_hint"
             const val REVOCATION_ENDPOINT = "revocation_endpoint"
-            const val INVALID_GRANT = "invalid_grant"
-            const val TIMEOUT_MS = 10_000
-            val HTTP_OK_RANGE = 200..299
         }
     }
+
+private const val INVALID_GRANT = "invalid_grant"
+private const val TIMEOUT_MS = 10_000
+private const val HTTP_OK_MIN = 200
+private const val HTTP_OK_MAX = 299
+
+// invalid_grant = refresh token caducado, ya usado o revocado (otro dispositivo, cierre de cuenta).
+private fun failure(exception: AuthorizationException?): IdentityException {
+    val error =
+        when {
+            exception == null -> IdentityError.FAILED
+            isInvalidGrant(exception) -> IdentityError.SESSION_EXPIRED
+            exception == AuthorizationException.GeneralErrors.NETWORK_ERROR -> IdentityError.NETWORK
+            else -> IdentityError.FAILED
+        }
+    return IdentityException(error, exception)
+}
+
+private fun isInvalidGrant(exception: AuthorizationException): Boolean =
+    exception.type == AuthorizationException.TYPE_OAUTH_TOKEN_ERROR && exception.error == INVALID_GRANT
+
+private fun postForm(
+    endpoint: String,
+    body: String,
+) {
+    val connection = URL(endpoint).openConnection() as HttpURLConnection
+    try {
+        connection.requestMethod = "POST"
+        connection.doOutput = true
+        connection.connectTimeout = TIMEOUT_MS
+        connection.readTimeout = TIMEOUT_MS
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+        connection.outputStream.use { it.write(body.toByteArray()) }
+        check(connection.responseCode in HTTP_OK_MIN..HTTP_OK_MAX) { "HTTP ${connection.responseCode}" }
+    } finally {
+        connection.disconnect()
+    }
+}
