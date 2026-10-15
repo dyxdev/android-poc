@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">PoC Mux Consentimiento</string>
+    <string name="app_name">VenueNexa</string>
+    <string name="nav_home">Inicio</string>
+    <string name="nav_account">Cuenta</string>
+    <string name="detail_soon">La ficha del espacio llega en la siguiente entrega</string>
 </resources>

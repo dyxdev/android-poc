@@ -1,34 +1,26 @@
 package com.venuenexa.pocmux
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import com.venuenexa.pocmux.feature.playerlab.PlayerLabRoute
+import androidx.activity.enableEdgeToEdge
+import com.venuenexa.pocmux.core.designsystem.VenueNexaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-// Pantalla única de la PoC (fuera de alcance: navegación entre pantallas).
+// Actividad única: dibuja de borde a borde y pone el tema de VenueNexa. La navegación vive en AppShell.
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Solo hay tema claro: barras transparentes con iconos oscuros, sin depender del modo oscuro del sistema.
+        val lightBars = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+        enableEdgeToEdge(statusBarStyle = lightBars, navigationBarStyle = lightBars)
         setContent {
-            PocMuxTheme {
-                PlayerLabEntry()
+            VenueNexaTheme {
+                AppShell()
             }
         }
     }
-}
-
-@Composable
-private fun PlayerLabEntry() {
-    val context = LocalContext.current
-    PlayerLabRoute(context = context)
-}
-
-@Composable
-private fun PocMuxTheme(content: @Composable () -> Unit) {
-    MaterialTheme(content = content)
 }

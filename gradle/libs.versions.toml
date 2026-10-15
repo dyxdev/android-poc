@@ -16,6 +16,8 @@ coroutines = "1.10.2"
 timber = "5.0.1"
 # ADR-AND-0008. Última publicada en Maven Central (consultado 2026-10-14).
 appauth = "0.11.1"
+# ADR-AND-0013. Última publicada en Maven Central (consultado 2026-10-15); metadatos Kotlin 2.2, legibles con 2.1.20.
+coil = "3.6.3"
 junit = "4.13.2"
 turbine = "1.2.1"
 ktlintGradle = "12.1.2"
@@ -41,6 +43,9 @@ material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 appauth = { group = "net.openid", name = "appauth", version.ref = "appauth" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+androidx-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
@@ -48,6 +53,7 @@ turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_search_placeholder">Search venues or cities</string>
+    <string name="home_search_clear">Clear search</string>
+    <string name="home_account">Account</string>
+    <string name="home_category_all">All</string>
+    <string name="home_featured">Featured</string>
+    <string name="home_all_venues">All venues</string>
+    <string name="home_results">Results</string>
+    <string name="home_empty_title">No venues match your search</string>
+    <string name="home_empty_hint">Try another city or clear the category.</string>
+    <string name="home_empty_clear">Clear filters</string>
+    <string name="category_weddings">Weddings</string>
+    <string name="category_corporate">Corporate</string>
+    <string name="category_shoots">Shoots</string>
+    <string name="category_birthdays">Birthdays</string>
+    <string name="category_meetings">Meetings</string>
+    <string name="category_popups">Pop-ups</string>
+    <string name="venue_price_per_day">%1$s / day</string>
+    <string name="venue_capacity">Up to %1$d guests</string>
+    <string name="venue_available">Available</string>
+    <string name="venue_unavailable">Unavailable</string>
+    <string name="venue_save">Save %1$s</string>
+    <string name="venue_unsave">Remove %1$s from saved</string>
+    <string name="venue_photo_description">Photo of %1$s</string>
+</resources>

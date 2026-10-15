@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_search_placeholder">Busca espacios o ciudades</string>
+    <string name="home_search_clear">Borrar búsqueda</string>
+    <string name="home_account">Cuenta</string>
+    <string name="home_category_all">Todos</string>
+    <string name="home_featured">Destacados</string>
+    <string name="home_all_venues">Todos los espacios</string>
+    <string name="home_results">Resultados</string>
+    <string name="home_empty_title">Ningún espacio coincide con tu búsqueda</string>
+    <string name="home_empty_hint">Prueba con otra ciudad o quita la categoría.</string>
+    <string name="home_empty_clear">Quitar filtros</string>
+    <string name="category_weddings">Bodas</string>
+    <string name="category_corporate">Corporativo</string>
+    <string name="category_shoots">Sesiones</string>
+    <string name="category_birthdays">Cumpleaños</string>
+    <string name="category_meetings">Reuniones</string>
+    <string name="category_popups">Pop-up</string>
+    <string name="venue_price_per_day">%1$s / día</string>
+    <string name="venue_capacity">Hasta %1$d personas</string>
+    <string name="venue_available">Disponible</string>
+    <string name="venue_unavailable">No disponible</string>
+    <string name="venue_save">Guardar %1$s</string>
+    <string name="venue_unsave">Quitar %1$s de guardados</string>
+    <string name="venue_photo_description">Foto de %1$s</string>
+</resources>
