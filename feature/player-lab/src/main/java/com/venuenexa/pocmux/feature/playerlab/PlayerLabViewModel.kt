@@ -1,9 +1,11 @@
 package com.venuenexa.pocmux.feature.playerlab
 
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.venuenexa.pocmux.core.common.IoDispatcher
 import com.venuenexa.pocmux.core.consent.ConsentGate
+import com.venuenexa.pocmux.core.identity.IdentitySession
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +29,7 @@ class PlayerLabViewModel
     @Inject
     constructor(
         private val consentGate: ConsentGate,
+        private val identitySession: IdentitySession,
         @IoDispatcher private val io: CoroutineDispatcher,
     ) : ViewModel() {
         private val local = MutableStateFlow(LocalState())
@@ -35,8 +38,9 @@ class PlayerLabViewModel
             combine(
                 consentGate.granted,
                 consentGate.counters,
+                identitySession.state,
                 local,
-            ) { granted, counters, l ->
+            ) { granted, counters, identity, l ->
                 PlayerLabUiState(
                     consentGranted = granted,
                     mode = l.mode,
@@ -45,8 +49,35 @@ class PlayerLabViewModel
                     isLoadingToken = l.isLoadingToken,
                     tokenError = l.tokenError,
                     counters = counters,
+                    identity = identity,
                 )
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), PlayerLabUiState())
+
+        init {
+            // Recupera la sesión guardada (tokens cifrados) al abrir la pantalla.
+            viewModelScope.launch { identitySession.restore() }
+        }
+
+        // idpHint = "google" lleva directo al broker de Google en Keycloak (kc_idp_hint).
+        fun onSignIn(
+            idpHint: String?,
+            startActivity: (Intent) -> Unit,
+        ) {
+            viewModelScope.launch { identitySession.signInIntent(idpHint)?.let(startActivity) }
+        }
+
+        fun onAuthResult(data: Intent?) {
+            viewModelScope.launch { identitySession.onAuthorizationResult(data) }
+        }
+
+        // Fuerza una renovación: sirve para ver en el dispositivo la rotación del refresh token.
+        fun onRefreshToken() {
+            viewModelScope.launch { identitySession.freshAccessToken(forceRefresh = true) }
+        }
+
+        fun onSignOut(startActivity: (Intent) -> Unit) {
+            viewModelScope.launch { identitySession.beginSignOut()?.let(startActivity) }
+        }
 
         fun onConsentChange(granted: Boolean) {
             viewModelScope.launch {

@@ -1,6 +1,7 @@
 package com.venuenexa.pocmux.feature.playerlab
 
 import com.venuenexa.pocmux.core.consent.NetworkCounters
+import com.venuenexa.pocmux.core.identity.IdentityState
 
 // Estado único de la pantalla (UDF): el ViewModel lo expone como StateFlow.
 data class PlayerLabUiState(
@@ -11,4 +12,5 @@ data class PlayerLabUiState(
     val isLoadingToken: Boolean = false,
     val tokenError: Boolean = false,
     val counters: NetworkCounters = NetworkCounters(),
+    val identity: IdentityState = IdentityState(),
 )

@@ -1,7 +1,10 @@
 package com.venuenexa.pocmux.feature.playerlab
 
+import android.content.Intent
 import com.venuenexa.pocmux.core.consent.ConsentGate
 import com.venuenexa.pocmux.core.consent.NetworkCounters
+import com.venuenexa.pocmux.core.identity.IdentitySession
+import com.venuenexa.pocmux.core.identity.IdentityState
 import com.venuenexa.pocmux.core.testing.FakeConsentProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,6 +38,21 @@ private class FakeConsentGate(provider: FakeConsentProvider) : ConsentGate {
     override fun resetCounters() = Unit
 }
 
+// Fake de la sesión de identidad: su lógica real se prueba en :core:identity.
+private class FakeIdentitySession : IdentitySession {
+    override val state: StateFlow<IdentityState> = MutableStateFlow(IdentityState())
+
+    override suspend fun restore() = Unit
+
+    override suspend fun signInIntent(idpHint: String?): Intent? = null
+
+    override suspend fun onAuthorizationResult(data: Intent?) = Unit
+
+    override suspend fun freshAccessToken(forceRefresh: Boolean): String? = null
+
+    override suspend fun beginSignOut(): Intent? = null
+}
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlayerLabViewModelTest {
     private val dispatcher = StandardTestDispatcher()
@@ -54,7 +72,7 @@ class PlayerLabViewModelTest {
     fun consentDeniedByDefault_andTogglePersists() =
         runTest {
             val gate = FakeConsentGate(FakeConsentProvider(initial = false))
-            val vm = PlayerLabViewModel(gate, dispatcher)
+            val vm = PlayerLabViewModel(gate, FakeIdentitySession(), dispatcher)
             // uiState usa stateIn(WhileSubscribed): sin colector el valor no se actualiza.
             backgroundScope.launch(dispatcher) { vm.uiState.collect {} }
             testScheduler.runCurrent()

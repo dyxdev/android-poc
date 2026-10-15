@@ -17,4 +17,18 @@
     <string name="lab_method_row">%1$s — recibidas %2$d, reenviadas %3$d</string>
     <string name="lab_host_row">%1$s — %2$d peticiones</string>
     <string name="lab_reset">Reiniciar contadores</string>
+    <string name="identity_title">Cuenta (Keycloak)</string>
+    <string name="identity_unknown">Comprobando la sesión…</string>
+    <string name="identity_signed_out">Sin sesión</string>
+    <string name="identity_signed_in">Sesión iniciada</string>
+    <string name="identity_signed_in_until">Sesión iniciada · el token de acceso caduca a las %1$s</string>
+    <string name="identity_sign_in">Iniciar sesión</string>
+    <string name="identity_sign_in_google">Entrar con Google</string>
+    <string name="identity_refresh">Renovar token</string>
+    <string name="identity_sign_out">Cerrar sesión</string>
+    <string name="identity_error_not_configured">Keycloak no está configurado. Compila con -PkeycloakIssuer y -PkeycloakClientId.</string>
+    <string name="identity_error_canceled">Inicio de sesión cancelado.</string>
+    <string name="identity_error_session_expired">La sesión caducó o se revocó. Vuelve a iniciar sesión.</string>
+    <string name="identity_error_network">No se pudo contactar con Keycloak.</string>
+    <string name="identity_error_failed">No se pudo iniciar sesión.</string>
 </resources>

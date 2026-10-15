@@ -33,6 +33,7 @@ android {
 dependencies {
     implementation(project(":core:consent"))
     implementation(project(":core:common"))
+    implementation(project(":core:identity"))
     implementation(libs.mux.player)
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.ui)
