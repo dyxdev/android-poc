@@ -49,8 +49,13 @@ registro por teléfono (Keycloak no lo trae; sin resolver igual que en ADR-WEB-0
 5. Para Google: el proveedor con alias `google` en el realm (`kc_idp_hint`). **No verificado.**
 6. Los ámbitos `acr` y `tenant` (hoy el PoC pide solo `openid email profile`; `-PkeycloakScopes` los cambia).
 
-Compilar con el realm: `./gradlew assembleDebug -PkeycloakIssuer=https://<host>/realms/<realm> -PkeycloakClientId=<id>`.
-Sin ellos la tarjeta muestra «Keycloak no está configurado».
+Compilar con el realm, por propiedad de Gradle o por variable de entorno (la propiedad manda si están las dos):
+- `./gradlew assembleDebug -PkeycloakIssuer=https://<host>/realms/<realm> -PkeycloakClientId=<id>`
+- `KEYCLOAK_ISSUER=https://<host>/realms/<realm> KEYCLOAK_CLIENT_ID=<id> ./gradlew assembleDebug`
+  (también `KEYCLOAK_SCOPES`). En un Codespace, los secretos de usuario se exponen como variables de entorno.
+
+Los valores entran en el APK al compilar (`BuildConfig`): **cambiarlos exige recompilar e instalar de nuevo**.
+No son secretos (cliente público con PKCE: emisor y `clientId`). Sin ellos la tarjeta muestra «Keycloak no está configurado».
 
 ## 6. Verificación (condiciones de ADR-AND-0008 que pasan o fallan)
 | # | Condición | Cómo | Estado |

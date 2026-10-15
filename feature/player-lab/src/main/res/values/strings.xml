@@ -26,7 +26,7 @@
     <string name="identity_sign_in_google">Sign in with Google</string>
     <string name="identity_refresh">Renew token</string>
     <string name="identity_sign_out">Sign out</string>
-    <string name="identity_error_not_configured">Keycloak is not configured. Build with -PkeycloakIssuer and -PkeycloakClientId.</string>
+    <string name="identity_error_not_configured">Keycloak is not configured. Build with KEYCLOAK_ISSUER and KEYCLOAK_CLIENT_ID (or -PkeycloakIssuer and -PkeycloakClientId).</string>
     <string name="identity_error_canceled">Sign-in canceled.</string>
     <string name="identity_error_session_expired">The session expired or was revoked. Sign in again.</string>
     <string name="identity_error_network">Could not reach Keycloak.</string>

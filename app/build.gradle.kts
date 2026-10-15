@@ -8,28 +8,38 @@ plugins {
 // Esquema propio exclusivo para la redirección de AppAuth (ADR-AND-0008): login y cierre de sesión.
 val redirectScheme = "com.venuenexa.pocmux"
 
+// Propiedad de Gradle (-P, gradle.properties, ORG_GRADLE_PROJECT_*) y, si no está, variable de entorno.
+fun configuredValue(
+    property: String,
+    environmentVariable: String,
+): Provider<String> = providers.gradleProperty(property).orElse(providers.environmentVariable(environmentVariable))
+
 android {
     namespace = "com.venuenexa.pocmux"
     defaultConfig {
         manifestPlaceholders["appAuthRedirectScheme"] = redirectScheme
         buildConfigField("String", "REDIRECT_SCHEME", "\"$redirectScheme\"")
         // Keycloak: el realm y el cliente los entrega backend (PV1-T41); sin ellos la pantalla dice
-        // «no configurado». Ver docs/identidad-keycloak.md:
+        // «no configurado». Se leen de una propiedad de Gradle (-P) o, si no está, de una variable de
+        // entorno (KEYCLOAK_ISSUER, KEYCLOAK_CLIENT_ID, KEYCLOAK_SCOPES). Ver docs/identidad-keycloak.md:
         //   ./gradlew assembleDebug -PkeycloakIssuer=https://<host>/realms/<realm> -PkeycloakClientId=<id>
+        //   KEYCLOAK_ISSUER=https://<host>/realms/<realm> KEYCLOAK_CLIENT_ID=<id> ./gradlew assembleDebug
         buildConfigField(
             "String",
             "KEYCLOAK_ISSUER",
-            providers.gradleProperty("keycloakIssuer").map { "\"$it\"" }.getOrElse("\"\""),
+            configuredValue("keycloakIssuer", "KEYCLOAK_ISSUER").map { "\"$it\"" }.getOrElse("\"\""),
         )
         buildConfigField(
             "String",
             "KEYCLOAK_CLIENT_ID",
-            providers.gradleProperty("keycloakClientId").map { "\"$it\"" }.getOrElse("\"\""),
+            configuredValue("keycloakClientId", "KEYCLOAK_CLIENT_ID").map { "\"$it\"" }.getOrElse("\"\""),
         )
         buildConfigField(
             "String",
             "KEYCLOAK_SCOPES",
-            providers.gradleProperty("keycloakScopes").map { "\"$it\"" }.getOrElse("\"openid email profile\""),
+            configuredValue("keycloakScopes", "KEYCLOAK_SCOPES")
+                .map { "\"$it\"" }
+                .getOrElse("\"openid email profile\""),
         )
     }
 }
