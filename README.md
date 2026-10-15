@@ -38,7 +38,9 @@ Keycloak es cambiar dos variables y **recompilar e instalar de nuevo**. Sin ella
 ### A. Con el Keycloak de pruebas del Codespace
 1. `git pull` y, en la terminal del Codespace: `bash tools/keycloak-test/start.sh`. Arranca Keycloak con su propio
    JDK 25, importa el realm `venuenexa` con el cliente `venuenexa-android` y deja el puerto 8080 en público
-   (si no puede, pon el puerto en público en la pestaña PORTS). Imprime el emisor y la línea de compilación.
+   (si no puede, o el puerto no aparece en la pestaña PORTS: «Forward a Port» > 8080 y Port Visibility > Public;
+   y Change Port Protocol > HTTP: la URL pública sigue siendo https; ver `docs/keycloak-de-pruebas.md`).
+   Imprime el emisor y la línea de compilación.
 2. Compila (sin ejecutar Gradle y Keycloak a la vez en un Codespace de 2 núcleos):
    ```bash
    KEYCLOAK_ISSUER=https://<codespace>-8080.app.github.dev/realms/venuenexa    KEYCLOAK_CLIENT_ID=venuenexa-android ./gradlew assembleDebug

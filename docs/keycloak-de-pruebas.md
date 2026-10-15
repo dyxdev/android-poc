@@ -60,6 +60,24 @@ existente usa el flujo por defecto de Keycloak (*first broker login*); **no** co
 | 8 | Es la misma prueba que el 5 (sesión cerrada en otro sitio). |
 No se pueden comprobar sin `adb`: tokens cifrados en disco (2) y exclusión de copias de seguridad (7).
 
+## Si el puerto 8080 no aparece en la pestaña PORTS
+Pasó en la primera prueba (2026-10-15): Keycloak arranca en segundo plano, con su salida en un archivo, y
+Codespaces puede no detectar el puerto (hipótesis, sin verificar). Se arregla a mano:
+1. Pestaña **PORTS** del panel inferior (Ctrl+Shift+P > «Ports: Focus on Ports View»).
+2. **Forward a Port** > `8080`.
+3. Clic derecho en la fila 8080 > **Port Visibility** > **Public**. Si queda en privado, el navegador (y la app) piden
+   iniciar sesión en GitHub y la app falla.
+4. Clic derecho en la fila 8080 > **Change Port Protocol** > **HTTP**. Keycloak sirve HTTP plano: con el puerto en HTTPS el
+   relé de Codespaces devuelve **502**. Esto solo describe el tramo relé→Keycloak; **la URL pública sigue siendo `https://`**
+   (el relé termina el HTTPS), que es lo que AppAuth exige.
+5. Comprueba que Keycloak escucha: `curl -s http://localhost:8080/realms/venuenexa/.well-known/openid-configuration | head -c 200`
+   (debe salir un JSON). Y desde fuera: la misma URL con la dirección pública; su campo `issuer` debe ser esa dirección.
+Si `localhost:8080` no responde, Keycloak no está en marcha (por ejemplo, el Codespace se suspendió): repite `start.sh`.
+Medido el 2026-10-15: con el puerto en protocolo HTTPS y privado, `localhost:8080` daba 200 y la URL pública 502; en HTTP
+pedía iniciar sesión en GitHub (puerto privado); en HTTP y público funcionó. Si Keycloak arrancaba solo en `127.0.0.1` no
+se comprobó que importe (el script añade `--http-host=0.0.0.0` por si acaso).
+Una mejora posible (no aplicada, exige reconstruir el contenedor): `forwardPorts: [8080]` en `.devcontainer/devcontainer.json`.
+
 ## Seguridad
 - **La consola `/admin` y el registro quedan accesibles a cualquiera con la URL mientras el puerto sea público.**
   Por eso la contraseña de administración es aleatoria, no hay datos reales y conviene parar el servidor al terminar.

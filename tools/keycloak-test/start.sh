@@ -105,6 +105,12 @@ if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
   exit 0
 fi
 
+if ss -ltn 2>/dev/null | grep -q ":$PORT "; then
+  echo "El puerto $PORT ya está ocupado y no hay un Keycloak de pruebas registrado (¿un arranque anterior sin parar?)." >&2
+  echo "  Mira quién escucha: ss -ltnp | grep :$PORT   y páralo con: bash tools/keycloak-test/stop.sh" >&2
+  exit 1
+fi
+
 mkdir -p "$WORK"
 cd "$WORK"
 
@@ -146,10 +152,14 @@ fi
 mkdir -p "$KC/data/import"
 cp "$HERE/realm-venuenexa.json" "$KC/data/import/"
 
+# --http-host=0.0.0.0: en modo desarrollo Keycloak escucha solo en 127.0.0.1. Se añadió por hipótesis ante el 502 del
+# 2026-10-15, pero lo que lo resolvió fue poner el puerto en protocolo HTTP y en Public (ver docs/keycloak-de-pruebas.md);
+# no se comprobó que haga falta. Dentro del Codespace solo se llega por su reenvío.
 echo "Arrancando Keycloak (la primera vez tarda un par de minutos)..."
 KC_BOOTSTRAP_ADMIN_USERNAME="$ADMIN_USER" KC_BOOTSTRAP_ADMIN_PASSWORD="$ADMIN_PASSWORD" JAVA_HOME="$JDK" \
   nohup "$KC/bin/kc.sh" start-dev \
   --http-port="$PORT" \
+  --http-host=0.0.0.0 \
   --hostname="$PUBLIC_URL" \
   --proxy-headers=xforwarded \
   --import-realm \
@@ -190,7 +200,11 @@ fi
 if command -v gh > /dev/null 2>&1 && gh codespace ports visibility "$PORT:public" -c "$CODESPACE_NAME" > /dev/null 2>&1; then
   echo "Puerto $PORT puesto en público."
 else
-  echo "AVISO: pon el puerto $PORT en público a mano: pestaña PORTS > clic derecho en $PORT > Port Visibility > Public." >&2
+  echo "AVISO: el script no pudo poner el puerto $PORT en público (suele pasar si Codespaces aún no lo reenvía). A mano:" >&2
+  echo "  1. Panel inferior > pestaña PORTS (Ctrl+Shift+P > «Ports: Focus on Ports View»)." >&2
+  echo "  2. Si no aparece el $PORT: «Forward a Port» > $PORT." >&2
+  echo "  3. Clic derecho en $PORT > Port Visibility > Public." >&2
+  echo "  4. Clic derecho en $PORT > Change Port Protocol > HTTP (Keycloak sirve HTTP; la URL pública sigue siendo https)." >&2
 fi
 
 summary
