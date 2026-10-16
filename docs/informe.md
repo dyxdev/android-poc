@@ -1,5 +1,10 @@
 # Informe PoC Mux Data con puerta de consentimiento (ADR-AND-0032, decisión #8)
 
+> **Estado a 2026-10-16.** La PoC pasó de laboratorio a app (Inicio, Detalle con vídeo, Cuenta, bienvenida y cambio de
+> contexto): ver §7. Lo que Andy comunicó y lo que está medido o sin verificar se separa en cada apartado. **Lo que sigue
+> sin evidencia:** la captura de red de los casos A–E (§3), el resultado con consentimiento concedido y el corte en
+> caliente, y la compilación de los últimos seis commits (§6).
+
 > Cada afirmación es un **hecho comprobado**, una **inferencia** marcada como tal,
 > o **«no verificado»**. La recomendación final es una **propuesta**: decide Andy.
 
@@ -133,3 +138,98 @@ Actualización 2026-10-14: `gradlew`, `gradlew.bat` y el jar eran una versión r
 sustituyeron por los oficiales de Gradle 8.13.0 (sha256 del jar verificado contra
 https://services.gradle.org/distributions/gradle-8.13-wrapper.jar.sha256).
 Los puntos de riesgo de compilación que solo tu build puede confirmar siguen en §2.
+
+**Actualización 2026-10-15 (builds pegados por Andy tras añadir la app):** el primer build falló por Coil 3.6.3 (Compose 1.12 y
+stdlib 2.4.10, §7.3) y por `detekt` (`MatchingDeclarationName` en `feature:home`); `ktlintCheck` pasó en todos los módulos y
+los tests de `core:identity`, `core:consent` y `feature:player-lab` pasaron. El segundo build, con Coil 3.3.0, falló solo en
+`:core:designsystem:compileDebugKotlin` (`ExperimentalTextApi`, `Type.kt:12`), corregido en `e632f1d`; `detekt` y `ktlintCheck`
+pasaron en todos los módulos, incluido `feature:home`. **Desde entonces no hay build pegado:** no consta que compilen
+`feature:home`, `feature:detail`, `feature:account`, `feature:owner`, `core:context` ni `app`, ni que pasen sus pruebas.
+
+## 7. La PoC como app (2026-10-15 y 2026-10-16)
+
+Todas las decisiones de esta sección son de Andy y están fechadas. El código de la app **no se ha compilado ni probado
+desde el commit `e632f1d`** (solo se leyó y se revisó; ver §6); lo que Andy probó en el móvil se anota como comunicado.
+
+### 7.1 Qué hay
+- **Identidad (ADR-AND-0008):** login con Keycloak (AppAuth), Google por el *broker*, tokens cifrados con Keystore,
+  cierre de sesión con revocación y cierre SSO. **Comunicado por Andy (2026-10-15): el login funcionó en su móvil** contra el
+  Keycloak de pruebas del Codespace (`tools/keycloak-test/`). Corrige el aviso de `docs/identidad-keycloak.md` («nada se ha
+  compilado ni ejecutado»), que quedó atrás.
+- **Verificación manual en el móvil: comunicado por Andy (2026-10-16)** que probó la APK de forma manual. No detalló qué flujos ni con qué
+  versión del código, así que aquí **no** se da por probado ningún flujo concreto más allá del login (arriba); pendiente de que Andy
+  lo concrete (Inicio, Detalle y tour, Cuenta, bienvenida, cambio de contexto, consentimiento) para registrarlo.
+- **App (módulos nuevos):** `core:model`, `core:data` (venues de ejemplo, guardados, preferencias en DataStore),
+  `core:designsystem` (tema, tipografía Outfit, componentes), `core:context` (contextos y su hoja de cambio),
+  `feature:home`, `feature:detail`, `feature:account`, `feature:owner` y `app` con navegación tipada. El laboratorio de Mux
+  sigue en `feature:player-lab`, ahora dentro de Cuenta → Diagnóstico.
+- **Vídeo del tour (ADR-AND-0030 y 0032):** el detalle reproduce con el mismo reproductor candidato del laboratorio (Mux Player
+  con `ExoPlayerBinding` y la puerta de consentimiento), configurado en **un solo sitio** (`GatedMuxPlayer`, `core:consent`).
+- **Diseño:** identidad de la web (Outfit, sin color dinámico); **solo se hizo y se probó el tema claro, por simplicidad**: el modo oscuro debe soportarse (decisión de Andy, 2026-10-16) y falta. Brief en `docs/design/design-brief.md`.
+
+### 7.2 Decisiones de Andy
+| Fecha | Decisión |
+|---|---|
+| 2026-10-15 | Reutilizar la identidad visual de la web; app real con Inicio (híbrido: destacados + lista), Detalle con vídeo y Cuenta; en la PoC solo se probó el tema claro, por simplicidad (el oscuro se soporta, 2026-10-16) |
+| 2026-10-15 | Dependencias nuevas autorizadas: Coil, navigation-compose y kotlinx-serialization (rutas tipadas) |
+| 2026-10-15 | La puerta de consentimiento descarta completando con éxito (`true`); ver §4 |
+| 2026-10-15 | Cambio de contexto: capacidades **simuladas** en local; conmutador híbrido de una hoja con tres entradas (etiqueta de perfil, avatar, bloque en Cuenta), sin apertura automática; aviso de primera vez (globo y punto), una vez por cada contexto nuevo |
+| 2026-10-15 | La bienvenida «Explorar / Iniciar sesión» solo sale la primera vez |
+| 2026-10-16 | El consentimiento de analítica es **de la persona**: se retira al cerrar sesión (también por caducidad) |
+
+### 7.3 Hechos medidos que condicionan los ADR
+- **Coil:** 3.4.0 y posteriores piden `kotlin-stdlib` 2.3+ y la 3.6.3 arrastra Compose 1.12 (pide AGP 9.1). Comprobado en los
+  `.module` de Maven Central y en el fallo real del build del Codespace (2026-10-15). Con Kotlin 2.1.20 y AGP 8.13.2 la última
+  compatible es **3.3.0**.
+- **Navigation Compose:** 2.10.x exige AGP 9.1; se usa **2.9.8** (metadatos de Maven, 2026-10-15).
+- **Compose BOM:** 2026.08.00 y posteriores (Compose 1.12) exigen AGP 9.1; se usa 2026.06.01 (§1).
+- **Mux Player 1.6.0** exige `compileSdk` 37 (§1).
+- **Compose 1.11.4:** `Font(resId, …, variationSettings)` sigue marcada `@ExperimentalTextApi` (fuentes publicadas y error real
+  del build); la transición compartida (`SharedTransitionLayout`) ya no requiere opt-in.
+- **Todas estas versiones son del proyecto, no de los ADR:** suben juntas el día que el proyecto suba a AGP 9.1.
+
+### 7.4 Limpieza al cerrar sesión (ADR-AND-0008, 0013 y 0026)
+Un solo punto (`SessionCleanup`) actúa cuando la sesión pasa de iniciada a cerrada, sea cual sea la causa: guardados, contexto
+recordado y avisos vistos, cachés de imágenes y consentimiento de analítica. Tiene pruebas de JVM (**sin ejecutar**, §6).
+
+### 7.5 Lo que sigue abierto
+- Captura de red de los casos A–E (§3), con mitmproxy (`sudo pacman -S mitmproxy`, aún sin instalar en la máquina de Andy).
+- Medir la lentitud que Andy percibió en el APK de debug (compilar un release firmado con la clave de debug y comparar).
+- Capacidades reales: dependen del endpoint de capacidades de la API (ADR-AND-0026); hoy son simuladas y **solo en debug**.
+- El panel de propietario es de ejemplo y conserva su estado al cambiar de contexto (los datos reales deberán vaciarse).
+
+## 8. Cruce con los ADR de Android (2026-10-16)
+
+Revisión de ADR-AND-0001 a 0032 contra esta PoC y entre sí (un revisor independiente de solo lectura, con los hallazgos
+comprobados después contra los textos; el código de la PoC se leyó, no se ejecutó). Resultado:
+
+- **Registrado como hecho** (Follow-up de 13 ADR, sin cambiar ninguna decisión): 0001, 0003, 0004, 0006, 0007, 0008, 0012,
+  0015, 0018, 0020, 0026, 0030, 0032 (y 0013, a la espera de que se integre el trabajo en curso de ese archivo). Cada nota empieza por
+  «Comprobación en la PoC (2026-10-16)» y separa lo medido de lo pendiente.
+- **Coherencia corregida:** 0030 se marca como parcialmente sustituido por 0032 (queda como reserva); título de 0032 y fila del README
+  sin el «si el proveedor es Mux» ya resuelto; 0008 recoge que Keycloak está en ADR-VN-0007.
+- **Citas verificadas:** todos los `ADR-AND`, `ADR-WEB` e `ADR-IOS` citados existen, y los RF y RNF citados también.
+- **Decisiones que necesitan a Andy** (el agente no las toma; cada una cita los ADR afectados):
+
+| # | Decisión | ADR | Opciones |
+|---|---|---|---|
+| D1 | Estado de la #9 y de `minSdk` 34 (los ADR dicen «pendiente» y otros «establecido») | 0001, 0009, 0015, 0022, 0032, CLAUDE.md | Fijar 34 como decidido (quién y cuándo) o dejarlo pendiente |
+| D2 | El consentimiento de analítica es de la persona: dónde queda escrito (ámbito, defecto, un interruptor o varios, invitado, Crashlytics, paridad) | 0014, 0029, 0032 | ADR propio, o enmienda de 0032 y 0029 |
+| D3 | Limpieza al cerrar sesión en un solo punto (disparador, qué es de la persona, política de fallos) | 0007, 0008, 0013, 0026 | ADR corto, o enmiendas |
+| D4 | La app es solo de tema claro (como la web) frente al «soporte de modo oscuro» | 0012 | **Decidido por Andy (2026-10-16): el modo oscuro se soporta**; la PoC solo probó el claro por simplicidad |
+| D5 | Política de versiones (matriz AGP, Kotlin, compileSdk) y APIs experimentales aprobadas | 0001, 0015, 0032 | Regla de matriz + lista de excepciones, o subir a AGP 9.1 |
+| D6 | Pruebas por riesgo en vez de «todo ViewModel y repositorio» | 0018 | Enmendar como ADR-WEB-0022, o escribir las que faltan |
+| D7 | Módulos nuevos (`identity`, `consent`, `context`) y datos de ejemplo dentro de `core:data` | 0020 | Enmendar el reparto |
+| D8 | `kapt` en vez de KSP para Hilt | 0004 | Migrar a KSP, o registrar la excepción con su motivo |
+| D9 | Contextos: una barra por contexto y simulador solo en debug por bandera | 0026 | Mantener y enmendar, o un grafo por contexto y simulador en un source set de debug |
+| D10 | Límite de inactividad en móvil | 0008 | Definirlo, o dejarlo fuera |
+| D11 | Flags del invitado y qué se vacía al cerrar sesión | 0021, 0008 | Aclarar que `minSupportedVersion` y flags de invitado no se vacían |
+| D12 | Vídeos públicos sin token y `enableSmartCache(false)` | 0030, 0032 | Aceptarlos y registrarlos, o exigir siempre token |
+| D13 | Mover cifras, versiones y nombres de API de los ADR a la bitácora (regla de Andy) | 0004, 0009, 0011, 0028, 0031, 0032 | Hacerlo en bloque, o ADR por ADR |
+| D14 | Excepción de red solo en debug (texto en claro a `10.0.2.2` y CA de usuario) | 0005 | Registrarla en el ADR |
+
+**Decididas por Andy el 2026-10-16 (las recomendadas):** D2 → ADR-AND-0033 (consentimiento de analítica de la persona), D3 → ADR-AND-0034 (limpieza al cerrar sesión), D4 → ADR-AND-0012 (corregida por Andy el mismo día: el modo oscuro **se soporta** en toda la app; la PoC solo probó el claro por simplicidad), D6 → ADR-AND-0018 enmendado a mínimos por riesgo. Las demás (D1, D5, D7 a D14) siguen pendientes de Andy.
+
+- **Pendientes de código** (no cambian decisiones): módulos que repiten el bloque de Compose y Hilt, dependencias fuera del
+  catálogo, ktlint y detekt desde la raíz, fakes repetidos en vez de `core:testing`, `Dispatchers.IO` en `core:designsystem`, la
+  versión de Mux escrita a mano en `ConsentModule`, y la ruta del laboratorio que sigue dentro del APK de release.

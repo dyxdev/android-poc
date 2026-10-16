@@ -55,7 +55,7 @@ Las dos tiraban en direcciones distintas; Andy eligió el **híbrido** (ver deci
 - **Tipografía:** Outfit (display 800 con tracking −3 %, títulos 700, cuerpo 400, UI 500–600) sobre la escala de Material 3.
   Hay que empaquetar los `.ttf` (licencia OFL) en `res/font`; las fuentes descargables piden Google Play services.
 - **Forma y densidad:** 8 dp en tarjetas, botones, campos y medios (12 dp solo para destacados); botones rectangulares,
-  sin píldoras mezcladas con rectángulos; compacto (fotos 3:2, rejillas con huecos de 12–16 dp). Solo tema claro.
+  sin píldoras mezcladas con rectángulos; compacto (fotos 3:2, rejillas con huecos de 12–16 dp). **Tema claro en la PoC (por simplicidad); el modo oscuro debe soportarse en toda la app (Andy, 2026-10-16) y falta.**
 - **Evitar** (del brief de la web): fondos morados o rosas de página, decoración en bucle, degradados en tarjetas de
   contenido, iconos en cajas de color, emojis como iconos, movimiento en datos fuera de los destacados.
 

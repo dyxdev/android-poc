@@ -3,6 +3,10 @@
 > Cada afirmación es un **hecho comprobado**, o está marcada **«no verificado»**. Estado a 2026-10-14:
 > **el código está escrito y nada de él se ha compilado ni ejecutado todavía** (ni los tests ni el
 > login contra un realm). Las decisiones de este documento son de Andy; lo pendiente se marca como tal.
+>
+> **Actualización 2026-10-16:** el build del Codespace pasó con la identidad y Andy comunicó (2026-10-15) que **el login con
+> Keycloak funcionó en su móvil** contra el Keycloak de pruebas (`docs/keycloak-de-pruebas.md`). Siguen sin verificar el
+> step-up, la vinculación de Google (falta el cliente OAuth en Google Cloud) y las llamadas a la API.
 
 ## 1. Fuentes que mandan
 - `ADR-AND-0008` (VenueNexa-android): AppAuth for Android, Keycloak como cliente público con

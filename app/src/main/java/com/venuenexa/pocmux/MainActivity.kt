@@ -14,7 +14,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Solo hay tema claro: barras transparentes con iconos oscuros, sin depender del modo oscuro del sistema.
+        // De momento solo hay tema claro (simplicidad de la PoC): barras transparentes con iconos oscuros. Con el tema
+        // oscuro habrá que elegir el estilo de las barras según el tema.
         val lightBars = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
         enableEdgeToEdge(statusBarStyle = lightBars, navigationBarStyle = lightBars)
         setContent {

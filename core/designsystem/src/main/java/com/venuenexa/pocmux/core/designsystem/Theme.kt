@@ -17,7 +17,8 @@ private val VenueNexaShapes =
         extraLarge = RoundedCornerShape(12.dp),
     )
 
-// Solo tema claro (decisión de la web, 2026-10-09) y sin color dinámico: la marca manda.
+// Solo tema claro y sin color dinámico: la marca manda. El tema claro es solo por simplicidad de la PoC; el modo
+// oscuro debe soportarse en toda la app (decisión de Andy, 2026-10-16, ADR-AND-0012) y falta aquí.
 @Composable
 fun VenueNexaTheme(content: @Composable () -> Unit) {
     CompositionLocalProvider(LocalSpacing provides Spacing()) {

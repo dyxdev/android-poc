@@ -30,7 +30,7 @@ class SessionCleanup(
 
     // Cada paso va aparte: que uno falle (disco, DataStore) no impide los demás.
     private suspend fun cleanUp() {
-        savedVenues.clear()
+        attempt { savedVenues.clear() }
         attempt { contextManager.reset() }
         attempt { consentGate.setGranted(false) }
         attempt { clearImages() }
