@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Solo debug: cleartext a 10.0.2.2 (token server local) + CA de usuario (mitmproxy).
-     El manifest de release no debe incluirlo: vive en src/debug. -->
+<!-- Solo debug: cleartext (token server en 10.0.2.2 y un Keycloak por IP en la red local) + CA de usuario (mitmproxy).
+     La red no puede expresar «cualquier IP», así que el texto claro queda abierto en debug; la app solo lo usa para un
+     emisor http cuyo host es una IP (core:identity IssuerPolicy). El manifest de release no debe incluirlo: vive en
+     src/debug y release usa el de src/main (sin cleartext). -->
 <network-security-config>
-    <base-config cleartextTrafficPermitted="false" />
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="false">10.0.2.2</domain>
-    </domain-config>
+    <base-config cleartextTrafficPermitted="true" />
     <debug-overrides>
         <trust-anchors>
             <certificates src="system" />

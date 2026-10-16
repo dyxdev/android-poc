@@ -21,5 +21,7 @@ object IdentityConfigModule {
             redirectUri = "${BuildConfig.REDIRECT_SCHEME}:/oauth2redirect",
             postLogoutRedirectUri = "${BuildConfig.REDIRECT_SCHEME}:/logout",
             scopes = BuildConfig.KEYCLOAK_SCOPES.split(" ").filter { it.isNotBlank() },
+            // Solo debug: emisor http si su host es una IP (Keycloak en la red local). Release exige https.
+            allowCleartextIpIssuer = BuildConfig.DEBUG,
         )
 }

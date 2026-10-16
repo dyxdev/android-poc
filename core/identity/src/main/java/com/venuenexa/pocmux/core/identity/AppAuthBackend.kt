@@ -11,6 +11,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import net.openid.appauth.AppAuthConfiguration
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationResponse
@@ -20,6 +21,7 @@ import net.openid.appauth.EndSessionRequest
 import net.openid.appauth.GrantTypeValues
 import net.openid.appauth.ResponseTypeValues
 import net.openid.appauth.TokenRequest
+import timber.log.Timber
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -41,7 +43,19 @@ class AppAuthBackend
         private val config: IdentityConfig,
         @IoDispatcher private val io: CoroutineDispatcher,
     ) : AuthBackend {
-        private val service by lazy { AuthorizationService(context) }
+        private val connectionBuilder = LanConnectionBuilder(config.allowCleartextIpIssuer)
+        private val service by lazy {
+            AuthorizationService(
+                context,
+                AppAuthConfiguration
+                    .Builder()
+                    .setConnectionBuilder(connectionBuilder)
+                    // AppAuth exige un emisor https en el id token; con un emisor http por IP (solo debug) se omite.
+                    .setSkipIssuerHttpsCheck(issuerCheck == IssuerCheck.CLEARTEXT_IP)
+                    .build(),
+            )
+        }
+        private val issuerCheck get() = IssuerPolicy.check(config.issuer, config.allowCleartextIpIssuer)
         private val configurationMutex = Mutex()
         private var configuration: AuthorizationServiceConfiguration? = null
 
@@ -123,6 +137,10 @@ class AppAuthBackend
         // Descubrimiento OIDC una vez (en memoria); sin emisor configurado no hay nada que descubrir.
         private suspend fun serviceConfiguration(): AuthorizationServiceConfiguration {
             if (!config.isConfigured) throw IdentityException(IdentityError.NOT_CONFIGURED)
+            if (issuerCheck == IssuerCheck.REJECTED) {
+                Timber.w("Emisor rechazado: solo https (o http con IP en debug)")
+                throw IdentityException(IdentityError.NOT_CONFIGURED)
+            }
             return configurationMutex.withLock {
                 configuration ?: fetchConfiguration().also { configuration = it }
             }
@@ -130,13 +148,17 @@ class AppAuthBackend
 
         private suspend fun fetchConfiguration(): AuthorizationServiceConfiguration =
             suspendCancellableCoroutine { continuation ->
-                AuthorizationServiceConfiguration.fetchFromIssuer(Uri.parse(config.issuer)) { fetched, exception ->
-                    if (fetched != null) {
-                        continuation.resume(fetched)
-                    } else {
-                        continuation.resumeWithException(IdentityException(IdentityError.NETWORK, exception))
-                    }
-                }
+                AuthorizationServiceConfiguration.fetchFromIssuer(
+                    Uri.parse(config.issuer),
+                    { fetched, exception ->
+                        if (fetched != null) {
+                            continuation.resume(fetched)
+                        } else {
+                            continuation.resumeWithException(IdentityException(IdentityError.NETWORK, exception))
+                        }
+                    },
+                    connectionBuilder,
+                )
             }
 
         private suspend fun tokenRequest(request: TokenRequest): Tokens =

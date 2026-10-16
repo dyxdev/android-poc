@@ -58,6 +58,14 @@ Compilar con el realm, por propiedad de Gradle o por variable de entorno (la pro
 - `KEYCLOAK_ISSUER=https://<host>/realms/<realm> KEYCLOAK_CLIENT_ID=<id> ./gradlew assembleDebug`
   (también `KEYCLOAK_SCOPES`). En un Codespace, los secretos de usuario se exponen como variables de entorno.
 
+**Emisor http por IP, solo en debug (decisión de Andy, 2026-10-16).** En debug se acepta `-PkeycloakIssuer=http://<IP>/realms/<realm>`
+si el host es una IP (v4); un dominio con http se rechaza siempre y en release solo vale https. Con un emisor rechazado la
+pantalla dice «no configurado» (antes AppAuth lanzaba `IllegalArgumentException` en su AsyncTask y la app se caía). Límites:
+la red de Android no puede expresar «cualquier IP», así que `src/debug/.../network_security_config.xml` deja el texto claro abierto
+en debug y es la app (`IssuerPolicy`) quien lo restringe al emisor; el id token se acepta con emisor http (`skipIssuerHttpsCheck`);
+si Keycloak anuncia en el descubrimiento otro host (su `hostname`), esos endpoints también deben ser alcanzables. **No
+verificado en dispositivo.**
+
 Los valores entran en el APK al compilar (`BuildConfig`): **cambiarlos exige recompilar e instalar de nuevo**.
 No son secretos (cliente público con PKCE: emisor y `clientId`). Sin ellos la tarjeta muestra «Keycloak no está configurado».
 
