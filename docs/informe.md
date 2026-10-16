@@ -213,22 +213,22 @@ comprobados después contra los textos; el código de la PoC se leyó, no se eje
 
 | # | Decisión | ADR | Opciones |
 |---|---|---|---|
-| D1 | Estado de la #9 y de `minSdk` 34 (los ADR dicen «pendiente» y otros «establecido») | 0001, 0009, 0015, 0022, 0032, CLAUDE.md | Fijar 34 como decidido (quién y cuándo) o dejarlo pendiente |
+| D1 | Estado de la #9 y de `minSdk` 34 (los ADR dicen «pendiente» y otros «establecido») | 0001, 0009, 0015, 0022, 0032, CLAUDE.md | **Decidido (Andy, 2026-10-16): `minSdk` 34, cerrado por Danay** |
 | D2 | El consentimiento de analítica es de la persona: dónde queda escrito (ámbito, defecto, un interruptor o varios, invitado, Crashlytics, paridad) | 0014, 0029, 0032 | ADR propio, o enmienda de 0032 y 0029 |
 | D3 | Limpieza al cerrar sesión en un solo punto (disparador, qué es de la persona, política de fallos) | 0007, 0008, 0013, 0026 | ADR corto, o enmiendas |
 | D4 | La app es solo de tema claro (como la web) frente al «soporte de modo oscuro» | 0012 | **Decidido por Andy (2026-10-16): el modo oscuro se soporta**; la PoC solo probó el claro por simplicidad |
-| D5 | Política de versiones (matriz AGP, Kotlin, compileSdk) y APIs experimentales aprobadas | 0001, 0015, 0032 | Regla de matriz + lista de excepciones, o subir a AGP 9.1 |
+| D5 | Política de versiones (matriz AGP, Kotlin, compileSdk) y APIs experimentales aprobadas | 0001, 0015, 0032 | **Decidido: matriz de compatibilidad y excepciones aprobadas; `compileSdk` 37 aceptado** |
 | D6 | Pruebas por riesgo en vez de «todo ViewModel y repositorio» | 0018 | Enmendar como ADR-WEB-0022, o escribir las que faltan |
-| D7 | Módulos nuevos (`identity`, `consent`, `context`) y datos de ejemplo dentro de `core:data` | 0020 | Enmendar el reparto |
-| D8 | `kapt` en vez de KSP para Hilt | 0004 | Migrar a KSP, o registrar la excepción con su motivo |
-| D9 | Contextos: una barra por contexto y simulador solo en debug por bandera | 0026 | Mantener y enmendar, o un grafo por contexto y simulador en un source set de debug |
-| D10 | Límite de inactividad en móvil | 0008 | Definirlo, o dejarlo fuera |
-| D11 | Flags del invitado y qué se vacía al cerrar sesión | 0021, 0008 | Aclarar que `minSupportedVersion` y flags de invitado no se vacían |
-| D12 | Vídeos públicos sin token y `enableSmartCache(false)` | 0030, 0032 | Aceptarlos y registrarlos, o exigir siempre token |
-| D13 | Mover cifras, versiones y nombres de API de los ADR a la bitácora (regla de Andy) | 0004, 0009, 0011, 0028, 0031, 0032 | Hacerlo en bloque, o ADR por ADR |
-| D14 | Excepción de red solo en debug (texto en claro a `10.0.2.2` y CA de usuario) | 0005 | Registrarla en el ADR |
+| D7 | Módulos nuevos (`identity`, `consent`, `context`) y datos de ejemplo dentro de `core:data` | 0020 | **Decidido: el reparto de la PoC es la referencia** |
+| D8 | `kapt` en vez de KSP para Hilt | 0004 | **Decidido: KSP para más adelante** |
+| D9 | Contextos: una barra por contexto y simulador solo en debug por bandera | 0026 | **Decidido: un grafo con barra por contexto y simulador solo en debug** |
+| D10 | Límite de inactividad en móvil | 0008 | **Decidido: paridad con la web** |
+| D11 | Flags del invitado y qué se vacía al cerrar sesión | 0021, 0008 | **Decidido: no se vacían** |
+| D12 | Vídeos públicos sin token y `enableSmartCache(false)` | 0030, 0032 | **Decidido: lo que dicen los ADR (token siempre; caché apagada)** |
+| D13 | Mover cifras, versiones y nombres de API de los ADR a la bitácora (regla de Andy) | 0004, 0009, 0011, 0028, 0031, 0032 | **Decidido: en bloque, datos copiados a la bitácora** |
+| D14 | Excepción de red solo en debug (texto en claro a `10.0.2.2` y CA de usuario) | 0005 | **Decidido: registrar la excepción de debug** |
 
-**Decididas por Andy el 2026-10-16 (las recomendadas):** D2 → ADR-AND-0033 (consentimiento de analítica de la persona), D3 → ADR-AND-0034 (limpieza al cerrar sesión), D4 → ADR-AND-0012 (corregida por Andy el mismo día: el modo oscuro **se soporta** en toda la app; la PoC solo probó el claro por simplicidad), D6 → ADR-AND-0018 enmendado a mínimos por riesgo. Las demás (D1, D5, D7 a D14) siguen pendientes de Andy.
+**Decididas por Andy el 2026-10-16 (las recomendadas):** D2 → ADR-AND-0033 (consentimiento de analítica de la persona), D3 → ADR-AND-0034 (limpieza al cerrar sesión), D4 → ADR-AND-0012 (corregida por Andy el mismo día: el modo oscuro **se soporta** en toda la app; la PoC solo probó el claro por simplicidad), D6 → ADR-AND-0018 enmendado a mínimos por riesgo. D1, D5 y D7 a D14 las decidió después (tabla de arriba y entrada de las 13:30 de la bitácora del lote). Queda por confirmar la fecha y el medio en que Danay cerró la #9, y su vía de distribución.
 
 - **Pendientes de código** (no cambian decisiones): módulos que repiten el bloque de Compose y Hilt, dependencias fuera del
   catálogo, ktlint y detekt desde la raíz, fakes repetidos en vez de `core:testing`, `Dispatchers.IO` en `core:designsystem`, la

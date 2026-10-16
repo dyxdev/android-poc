@@ -11,7 +11,7 @@ class SimulatedCapabilitiesTest {
     @Test
     fun signedOut_onlyGuest() =
         runTest {
-            val capabilities = SimulatedCapabilities(FakeSession(IdentityStatus.SIGNED_OUT), ownerGranted = true)
+            val capabilities = SimulatedCapabilities(FakeSession(IdentityStatus.SIGNED_OUT))
 
             assertEquals(setOf(UserContext.GUEST), capabilities.available.first())
         }
@@ -20,7 +20,7 @@ class SimulatedCapabilitiesTest {
     fun signedIn_guestPlusGrantedOwner_andFollowsSignOut() =
         runTest {
             val session = FakeSession(IdentityStatus.SIGNED_IN)
-            val capabilities = SimulatedCapabilities(session, ownerGranted = true)
+            val capabilities = SimulatedCapabilities(session)
             assertEquals(setOf(UserContext.GUEST, UserContext.OWNER), capabilities.available.first())
 
             session.mutableState.value = IdentityState(status = IdentityStatus.SIGNED_OUT)
@@ -28,17 +28,9 @@ class SimulatedCapabilitiesTest {
         }
 
     @Test
-    fun ownerNotGrantedByDefault_inAReleaseLikeConfiguration() =
-        runTest {
-            val capabilities = SimulatedCapabilities(FakeSession(IdentityStatus.SIGNED_IN), ownerGranted = false)
-
-            assertEquals(setOf(UserContext.GUEST), capabilities.available.first())
-        }
-
-    @Test
     fun revokingOwner_removesTheContext_andGuestCannotBeRevoked() =
         runTest {
-            val capabilities = SimulatedCapabilities(FakeSession(IdentityStatus.SIGNED_IN), ownerGranted = true)
+            val capabilities = SimulatedCapabilities(FakeSession(IdentityStatus.SIGNED_IN))
 
             capabilities.setGranted(UserContext.OWNER, granted = false)
             capabilities.setGranted(UserContext.GUEST, granted = false)
