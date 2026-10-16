@@ -1,47 +1,11 @@
 package com.venuenexa.pocmux.core.context
 
-import com.venuenexa.pocmux.core.data.UserPreferences
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
-
-// Fakes sin mocking (ADR-AND-0018).
-private class FakeCapabilities(initial: Set<UserContext>) : CapabilitiesSource {
-    val current = MutableStateFlow(initial)
-    override val available: Flow<Set<UserContext>> = current
-}
-
-private class FakePreferences : UserPreferences {
-    private val welcome = MutableStateFlow(false)
-    private val last = MutableStateFlow<String?>(null)
-    private val seen = MutableStateFlow<Set<String>>(emptySet())
-    override val welcomeSeen: Flow<Boolean> = welcome
-    override val lastContext: Flow<String?> = last
-    override val seenContexts: Flow<Set<String>> = seen
-
-    override suspend fun setWelcomeSeen() {
-        welcome.value = true
-    }
-
-    override suspend fun setLastContext(value: String) {
-        last.value = value
-    }
-
-    override suspend fun markContextsSeen(values: Set<String>) {
-        seen.value = seen.value + values
-    }
-
-    override suspend fun resetOnboarding() {
-        welcome.value = false
-        last.value = null
-        seen.value = emptySet()
-    }
-}
 
 class ContextManagerTest {
     private val guestOnly = setOf(UserContext.GUEST)
@@ -112,6 +76,19 @@ class ContextManagerTest {
             val state = manager.state.first()
             assertEquals(UserContext.OWNER, state.active)
             assertFalse(state.hintPending)
+        }
+
+    @Test
+    fun reset_forgetsTheLastContextAndTheSeenHints() =
+        runTest {
+            val manager = ContextManager(FakeCapabilities(guestAndOwner), FakePreferences())
+            manager.select(UserContext.OWNER)
+            manager.acknowledgeHint()
+
+            manager.reset()
+            val state = manager.state.first()
+            assertEquals(UserContext.GUEST, state.active)
+            assertTrue(state.hintPending)
         }
 
     @Test

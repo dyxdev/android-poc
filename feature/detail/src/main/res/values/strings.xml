@@ -10,6 +10,6 @@
     <string name="detail_analytics_on">Playback analytics: on</string>
     <string name="detail_analytics_off">Playback analytics: off (turn it on in Account)</string>
     <string name="detail_reserve">Reserve</string>
-    <string name="detail_reserve_soon">Booking arrives in a later delivery</string>
+    <string name="detail_reserve_soon">Reservations will be available soon</string>
     <string name="detail_not_found">This venue is no longer available</string>
 </resources>

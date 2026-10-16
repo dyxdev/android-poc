@@ -118,5 +118,15 @@ fuente, nunca solo color), `core:designsystem` con el tema y los componentes; la
     ver el cambio de contexto, no es la funcionalidad real.
   - Decisiones mías, reversibles: el contexto de cliente se llama **«Cliente»** (Andy dijo «cliente»); la administración
     queda fuera por ahora (el usuario `demo` tiene dos contextos); la sesión se restaura al arrancar la app.
+- **Revisión (2026-10-15, propia + una revisión independiente de solo lectura):** sin errores de compilación seguros
+  (firmas de Compose 1.11.4, Material3 1.4.0, Navigation 2.9.8, Coil 3.3.0 y Hilt comprobadas en sus fuentes). Corregido:
+  la limpieza de lo que es de la persona (guardados, contexto, avisos, cachés de imágenes) ya no depende del botón de
+  Cuenta: `SessionCleanup` actúa al pasar de sesión iniciada a cerrada, sea cual sea la causa (botón, laboratorio o
+  caducidad); un APK de release no concede contextos simulados ni enseña Diagnóstico; el reproductor con puerta de
+  consentimiento se configura en un solo sitio (`GatedMuxPlayer`, en `core:consent`) que usan el laboratorio y el
+  detalle; el tour se pausa en segundo plano; la bienvenida ya no se salta al restaurarse una sesión guardada.
+  **Decisión de Andy (2026-10-16): el consentimiento de analítica es de la persona**, no del dispositivo: se retira
+  al cerrar sesión (también por caducidad) y la pantalla de Cuenta lo dice. Quien navega como invitado sin haber
+  iniciado sesión conserva su elección: no hay sesión que cerrar.
 - **Pendiente:** Explorar y Guardados, reservas y pago, medir la lentitud de la UI (release firmado con la clave de
   debug), Paparazzi o similar para capturas, y todo lo que dependa de la API real (capacidades, step-up).

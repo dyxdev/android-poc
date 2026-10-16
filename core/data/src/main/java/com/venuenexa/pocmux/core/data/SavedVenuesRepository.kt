@@ -8,4 +8,7 @@ interface SavedVenuesRepository {
     val savedIds: StateFlow<Set<String>>
 
     fun toggle(venueId: String)
+
+    // Al cerrar sesión: los guardados no pasan a la siguiente persona que use el dispositivo.
+    fun clear()
 }

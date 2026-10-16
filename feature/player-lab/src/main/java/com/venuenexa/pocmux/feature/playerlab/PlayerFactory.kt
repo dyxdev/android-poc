@@ -9,26 +9,21 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import com.mux.player.MuxPlayer
 import com.mux.player.media.MediaItems
-import com.mux.stats.sdk.muxstats.ExoPlayerBinding
-import com.mux.stats.sdk.muxstats.INetworkRequest
+import com.venuenexa.pocmux.core.consent.ConsentGatingNetworkRequest
+import com.venuenexa.pocmux.core.consent.GatedMuxPlayer
 
 // Crea el reproductor según el modo. Verificado contra MuxPlayer.kt (main):
-// - addExoPlayerBinding + addNetwork existen en el Builder.
+// - El modo candidato (MUX_GATED) lo crea GatedMuxPlayer (core:consent), el mismo que usa la app.
 // - Sin binding, MuxPlayer crea MuxStatsSdkMedia3 SIN la red propia (puerta inútil: caso control).
 // - enableSmartCache(false) como pide el prompt.
 internal object PlayerFactory {
     fun create(
         context: Context,
         mode: PlayerMode,
-        gating: INetworkRequest,
+        gating: ConsentGatingNetworkRequest,
     ): ExoPlayer =
         when (mode) {
-            PlayerMode.MUX_GATED ->
-                MuxPlayer.Builder(context)
-                    .addExoPlayerBinding(ExoPlayerBinding())
-                    .addNetwork(gating)
-                    .enableSmartCache(false)
-                    .build()
+            PlayerMode.MUX_GATED -> GatedMuxPlayer.create(context, gating)
 
             PlayerMode.MUX_UNGATED ->
                 MuxPlayer.Builder(context)

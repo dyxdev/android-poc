@@ -90,7 +90,10 @@ fun MainScreen(
                     )
                 Tab.Panel -> OwnerRoute(modifier = Modifier.padding(padding))
                 Tab.Account ->
-                    AccountRoute(onOpenDiagnostics = onOpenDiagnostics, modifier = Modifier.padding(padding))
+                    AccountRoute(
+                        onOpenDiagnostics = if (BuildConfig.DEBUG) onOpenDiagnostics else null,
+                        modifier = Modifier.padding(padding),
+                    )
             }
         }
     }

@@ -8,7 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dagger.hilt.EntryPoints
+import com.venuenexa.pocmux.core.consent.consentGating
 
 // Alias del proveedor de Google en el realm (kc_idp_hint); lo registra backend en PV1-T41.
 private const val GOOGLE_IDP_HINT = "google"
@@ -22,7 +22,7 @@ fun PlayerLabRoute(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val gating =
         remember(context) {
-            EntryPoints.get(context.applicationContext, GatingEntryPoint::class.java).gating()
+            consentGating(context)
         }
     // Login y cierre de sesión se hacen en Custom Tabs; AppAuth devuelve el resultado como Intent.
     val authLauncher =

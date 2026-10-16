@@ -4,7 +4,7 @@
     <string name="account_guest_title">Invitado</string>
     <string name="account_guest_subtitle">Inicia sesión para guardar espacios y reservar</string>
     <string name="account_signed_in_title">Sesión iniciada</string>
-    <string name="account_signed_in_until">Caduca a las %1$s</string>
+    <string name="account_signed_in_until">Acceso válido hasta las %1$s</string>
     <string name="account_signed_in_active">Tu sesión está activa</string>
     <string name="account_sign_in">Iniciar sesión</string>
     <string name="account_sign_in_google">Continuar con Google</string>
@@ -13,7 +13,7 @@
     <string name="account_profile_switch">Cambiar de perfil</string>
     <string name="account_privacy_title">Privacidad</string>
     <string name="account_analytics_title">Analítica de reproducción</string>
-    <string name="account_analytics_description">Ayuda a mejorar la calidad del vídeo. Solo se envía si la activas y puedes cambiarla cuando quieras.</string>
+    <string name="account_analytics_description">Ayuda a mejorar la calidad del vídeo. Solo se envía si la activas, se desactiva al cerrar sesión y puedes cambiarla cuando quieras.</string>
     <string name="account_diagnostics_title">Diagnóstico</string>
     <string name="account_diagnostics_subtitle">Laboratorio de Mux y simulador de capacidades</string>
     <string name="account_error_not_configured">El inicio de sesión no está configurado en esta compilación</string>

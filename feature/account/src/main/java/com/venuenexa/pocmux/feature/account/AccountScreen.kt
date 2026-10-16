@@ -20,7 +20,7 @@ import com.venuenexa.pocmux.core.designsystem.spacing
 
 @Composable
 fun AccountRoute(
-    onOpenDiagnostics: () -> Unit,
+    onOpenDiagnostics: (() -> Unit)?,
     modifier: Modifier = Modifier,
     viewModel: AccountViewModel = hiltViewModel(),
 ) {
@@ -61,6 +61,6 @@ fun AccountScreen(
         SessionCard(identity = state.identity, actions = actions)
         if (switcher.state.canSwitch) ProfileCard(switcher = switcher)
         PrivacyCard(granted = state.analyticsConsent, onChange = actions.onConsentChange)
-        DiagnosticsCard(onClick = actions.onOpenDiagnostics)
+        actions.onOpenDiagnostics?.let { DiagnosticsCard(onClick = it) }
     }
 }

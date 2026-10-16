@@ -54,7 +54,7 @@ private fun AccountLargeFontPreview() {
 @Composable
 private fun WelcomePreview() {
     VenueNexaTheme {
-        WelcomeScreen(covers = null, showSignIn = true, onExplore = {}, onSignIn = {})
+        WelcomeScreen(covers = null, showSignIn = true, error = null, onExplore = {}, onSignIn = {})
     }
 }
 

@@ -17,4 +17,6 @@ class InMemorySavedVenuesRepository
         override val savedIds: StateFlow<Set<String>> = saved.asStateFlow()
 
         override fun toggle(venueId: String) = saved.update { if (venueId in it) it - venueId else it + venueId }
+
+        override fun clear() = saved.update { emptySet() }
     }

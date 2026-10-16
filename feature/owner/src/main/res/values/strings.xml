@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="owner_title">Owner panel</string>
-    <string name="owner_sample_note">Sample data: the real panel arrives with the API</string>
+    <string name="owner_sample_note">Sample data</string>
     <string name="owner_figure_pending">Pending bookings</string>
     <string name="owner_figure_income">This month</string>
     <string name="owner_figure_venues">Venues</string>

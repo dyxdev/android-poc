@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -56,7 +57,7 @@ fun ContextLabel(
     Box(modifier = modifier) {
         Surface(
             onClick = switcher.onOpen,
-            modifier = Modifier.semantics { contentDescription = description },
+            modifier = Modifier.minimumInteractiveComponentSize().semantics { contentDescription = description },
             shape = MaterialTheme.shapes.small,
             color = MaterialTheme.colorScheme.surface,
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),

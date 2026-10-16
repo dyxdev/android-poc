@@ -4,7 +4,7 @@
     <string name="account_guest_title">Guest</string>
     <string name="account_guest_subtitle">Sign in to save venues and book</string>
     <string name="account_signed_in_title">Signed in</string>
-    <string name="account_signed_in_until">Expires at %1$s</string>
+    <string name="account_signed_in_until">Access valid until %1$s</string>
     <string name="account_signed_in_active">Your session is active</string>
     <string name="account_sign_in">Sign in</string>
     <string name="account_sign_in_google">Continue with Google</string>
@@ -13,7 +13,7 @@
     <string name="account_profile_switch">Switch profile</string>
     <string name="account_privacy_title">Privacy</string>
     <string name="account_analytics_title">Playback analytics</string>
-    <string name="account_analytics_description">Helps improve video quality. It is only sent if you turn it on, and you can change it any time.</string>
+    <string name="account_analytics_description">Helps improve video quality. It is only sent if you turn it on, it turns off when you sign out, and you can change it any time.</string>
     <string name="account_diagnostics_title">Diagnostics</string>
     <string name="account_diagnostics_subtitle">Mux lab and capability simulator</string>
     <string name="account_error_not_configured">Sign-in is not configured in this build</string>

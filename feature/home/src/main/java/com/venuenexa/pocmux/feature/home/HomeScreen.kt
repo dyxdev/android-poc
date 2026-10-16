@@ -34,6 +34,7 @@ import com.venuenexa.pocmux.core.designsystem.SearchField
 import com.venuenexa.pocmux.core.designsystem.VenueNexaWordmark
 import com.venuenexa.pocmux.core.designsystem.spacing
 import com.venuenexa.pocmux.core.model.VenueCategory
+import com.venuenexa.pocmux.core.context.R as CtxR
 
 @Composable
 fun HomeRoute(
@@ -117,7 +118,13 @@ private fun HomeHeader(
             ContextLabel(switcher = switcher)
             // Con más de un perfil, el avatar abre la hoja de perfiles; si no, lleva a la cuenta.
             IconButton(onClick = { if (switcher.state.canSwitch) switcher.onOpen() else onAccountClick() }) {
-                Icon(Icons.Outlined.Person, contentDescription = stringResource(R.string.home_account))
+                Icon(
+                    imageVector = Icons.Outlined.Person,
+                    contentDescription =
+                        stringResource(
+                            if (switcher.state.canSwitch) CtxR.string.context_sheet_title else R.string.home_account,
+                        ),
+                )
             }
         }
     }

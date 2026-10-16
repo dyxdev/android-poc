@@ -35,6 +35,11 @@ class ContextManager
             if (context in capabilities.available.first()) preferences.setLastContext(context.name)
         }
 
+        // Cierre de sesión: se olvida el último contexto y los avisos vistos (son de la persona, no del dispositivo).
+        suspend fun reset() {
+            preferences.clearContextState()
+        }
+
         // Abrir la hoja de contextos o cerrar el globo cuenta como enterado de todos los contextos actuales.
         suspend fun acknowledgeHint() {
             preferences.markContextsSeen(capabilities.available.first().map { it.name }.toSet())

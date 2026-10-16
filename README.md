@@ -5,7 +5,11 @@ Mux Data está apagado sin consentimiento de analítica (0 peticiones a `*.litix
 
 ## Estructura
 
-- `app/` — pantalla única, `MainActivity`, config debug (cleartext a 10.0.2.2 + CA de usuario).
+- `app/` — `MainActivity`, bienvenida, navegación (Inicio, Detalle, Cuenta, Diagnóstico), config debug (cleartext a 10.0.2.2 + CA de usuario).
+- `core:model`, `core:data` — modelo de venues y datos de ejemplo; guardados y preferencias del usuario.
+- `core:designsystem` — tema de VenueNexa (Material 3), tipografía Outfit y componentes. `core:context` — contextos
+  (cliente/propietario), capacidades **simuladas** y la hoja de cambio de perfil (ADR-AND-0026).
+- `feature:home`, `feature:detail`, `feature:account`, `feature:owner` — pantallas de la app (diseño: `docs/design/design-brief.md`).
 - `core:consent` — DataStore (denegado por defecto) + `ConsentGatingNetworkRequest`
   (puerta `INetworkRequest`: delega en `MuxNetwork` con consentimiento, descarta sin él,
   lectura en cada envío, sin reenvío de lo previo) + contadores por método y host.

@@ -14,9 +14,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
-private const val STOP_TIMEOUT_MS = 5_000L
-
-// Estado del detalle de un venue. El ID llega por la ruta (la compone :app, ADR-AND-0020) por inyección asistida.
+// Estado del detalle de un venue. Eagerly: el venue es local e inmediato, así el primer fotograma ya tiene la
+// foto de destino de la transición compartida. El ID llega por la ruta (la compone :app, ADR-AND-0020).
 @HiltViewModel(assistedFactory = DetailViewModel.Factory::class)
 class DetailViewModel
     @AssistedInject
@@ -38,7 +37,7 @@ class DetailViewModel
                 } else {
                     DetailUiState.Content(venue = venue, saved = venueId in saved, analyticsConsent = granted)
                 }
-            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), DetailUiState.Loading)
+            }.stateIn(viewModelScope, SharingStarted.Eagerly, DetailUiState.Loading)
 
         fun onToggleSaved() = savedVenues.toggle(venueId)
     }

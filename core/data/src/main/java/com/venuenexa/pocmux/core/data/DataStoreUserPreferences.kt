@@ -52,6 +52,13 @@ class DataStoreUserPreferences
             context.userPreferencesStore.edit { it[SeenContextsKey] = it[SeenContextsKey].orEmpty() + values }
         }
 
+        override suspend fun clearContextState() {
+            context.userPreferencesStore.edit {
+                it.remove(LastContextKey)
+                it.remove(SeenContextsKey)
+            }
+        }
+
         override suspend fun resetOnboarding() {
             context.userPreferencesStore.edit {
                 it.remove(WelcomeSeenKey)

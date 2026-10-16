@@ -10,6 +10,6 @@
     <string name="detail_analytics_on">Analítica de reproducción: activada</string>
     <string name="detail_analytics_off">Analítica de reproducción: desactivada (se activa en Cuenta)</string>
     <string name="detail_reserve">Reservar</string>
-    <string name="detail_reserve_soon">La reserva llega en una próxima entrega</string>
+    <string name="detail_reserve_soon">Las reservas estarán disponibles pronto</string>
     <string name="detail_not_found">Este espacio ya no está disponible</string>
 </resources>

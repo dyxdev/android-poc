@@ -20,6 +20,9 @@ interface UserPreferences {
 
     suspend fun markContextsSeen(values: Set<String>)
 
+    // Al cerrar sesión: el último contexto y los avisos vistos son de quien tenía la sesión, no del dispositivo.
+    suspend fun clearContextState()
+
     // Herramienta de diagnóstico: vuelve a dejar la app como recién instalada.
     suspend fun resetOnboarding()
 }

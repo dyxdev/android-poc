@@ -18,7 +18,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -31,6 +33,7 @@ import com.venuenexa.pocmux.core.designsystem.StaggeredEntrance
 import com.venuenexa.pocmux.core.designsystem.VenueNexaWordmark
 import com.venuenexa.pocmux.core.designsystem.VenuePhoto
 import com.venuenexa.pocmux.core.designsystem.spacing
+import com.venuenexa.pocmux.core.identity.IdentityError
 import com.venuenexa.pocmux.core.identity.IdentityStatus
 
 private const val MAIN_PHOTO_ASPECT = 1.6f
@@ -49,16 +52,21 @@ fun WelcomeRoute(
     val covers by welcomeViewModel.covers.collectAsStateWithLifecycle()
     val auth = rememberAuthActions(accountViewModel)
     val status = account.identity.status
-    val initialStatus = remember { status }
-    // Continúa solo si la sesión se inicia desde esta pantalla (no si ya venía abierta).
+    var signInRequested by remember { mutableStateOf(false) }
+    // Continúa solo si el usuario pidió el login aquí: la restauración de una sesión guardada, que llega un instante
+    // después de abrir la app, no debe saltarse la bienvenida.
     LaunchedEffect(status) {
-        if (status == IdentityStatus.SIGNED_IN && initialStatus != IdentityStatus.SIGNED_IN) onFinished()
+        if (signInRequested && status == IdentityStatus.SIGNED_IN) onFinished()
     }
     WelcomeScreen(
         covers = covers,
         showSignIn = status != IdentityStatus.SIGNED_IN,
+        error = account.identity.error,
         onExplore = onFinished,
-        onSignIn = auth.signIn,
+        onSignIn = {
+            signInRequested = true
+            auth.signIn()
+        },
         modifier = modifier,
     )
 }
@@ -68,6 +76,7 @@ fun WelcomeRoute(
 fun WelcomeScreen(
     covers: List<String>?,
     showSignIn: Boolean,
+    error: IdentityError?,
     onExplore: () -> Unit,
     onSignIn: () -> Unit,
     modifier: Modifier = Modifier,
@@ -86,7 +95,7 @@ fun WelcomeScreen(
             StaggeredEntrance(index = 0, play = true) { Collage(covers = covers) }
             StaggeredEntrance(index = 1, play = true) { Headline() }
             StaggeredEntrance(index = 2, play = true) {
-                Buttons(showSignIn = showSignIn, onExplore = onExplore, onSignIn = onSignIn)
+                Buttons(showSignIn = showSignIn, error = error, onExplore = onExplore, onSignIn = onSignIn)
             }
         }
     }
@@ -111,6 +120,7 @@ private fun Headline() {
 @Composable
 private fun Buttons(
     showSignIn: Boolean,
+    error: IdentityError?,
     onExplore: () -> Unit,
     onSignIn: () -> Unit,
 ) {
@@ -120,6 +130,14 @@ private fun Buttons(
             onClick = onExplore,
             modifier = Modifier.fillMaxWidth(),
         )
+        // Sin esto, un login que falla (por ejemplo, Keycloak sin configurar) parecería un botón roto.
+        error?.let {
+            Text(
+                text = stringResource(errorLabel(it)),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
         if (showSignIn) {
             SecondaryButton(
                 text = stringResource(R.string.account_sign_in),

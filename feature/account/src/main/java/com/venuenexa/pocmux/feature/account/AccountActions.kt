@@ -6,5 +6,6 @@ data class AccountActions(
     val onSignInGoogle: () -> Unit,
     val onSignOut: () -> Unit,
     val onConsentChange: (Boolean) -> Unit,
-    val onOpenDiagnostics: () -> Unit,
+    // null oculta la tarjeta de Diagnóstico (release): el laboratorio y el simulador son solo de desarrollo.
+    val onOpenDiagnostics: (() -> Unit)?,
 )

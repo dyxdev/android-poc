@@ -20,4 +20,9 @@ data class Venue(
     val tourPlaybackId: String?,
     val isAvailable: Boolean,
     val isFeatured: Boolean,
-)
+) {
+    // La UI da por hecho que hay portada: un venue sin fotos falla aquí, no con un cierre en una tarjeta.
+    init {
+        require(photos.isNotEmpty()) { "Un venue necesita al menos una foto" }
+    }
+}

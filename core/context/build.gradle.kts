@@ -13,6 +13,7 @@ android {
 
 dependencies {
     implementation(project(":core:data"))
+    implementation(project(":core:consent"))
     implementation(project(":core:identity"))
     implementation(project(":core:designsystem"))
     implementation(platform(libs.compose.bom))
